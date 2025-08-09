@@ -1,14 +1,15 @@
+
 "use client";
 
 import type { ReactNode } from 'react';
-import Link from 'next-intl/link';
-import { usePathname } from 'next-intl/client';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 import { SidebarProvider, Sidebar, SidebarTrigger, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter, SidebarOverlay } from '@/components/ui/sidebar';
 import { Coffee, LayoutDashboard, ArrowLeftRight, Calculator, BookUser, Globe } from 'lucide-react';
 import BottomNav from '@/components/layout/bottom-nav';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuPortal, DropdownMenuSubContent } from '@/components/ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { useSidebar } from '@/components/ui/sidebar';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
@@ -29,9 +30,15 @@ function HeaderTitle() {
 }
 
 
-export default function MainLayout({ children }: { children: ReactNode }) {
+export default function MainLayout({ children, params: { locale } }: { children: ReactNode, params: { locale: string } }) {
   const t = useTranslations();
   const pathname = usePathname();
+
+  const getLocalizedPath = (path: string) => {
+    const pathWithoutLocale = pathname.startsWith(`/${locale}`) ? pathname.substring(`/${locale}`.length) : pathname;
+    return `/${path}${pathWithoutLocale}`;
+  }
+
 
   return (
     <SidebarProvider>
@@ -44,7 +51,7 @@ export default function MainLayout({ children }: { children: ReactNode }) {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild tooltip={t('Sidebar.dashboard')}>
-                  <Link href="/dashboard">
+                  <Link href={`/${locale}/dashboard`}>
                     <LayoutDashboard />
                     <span className="flex-1">{t('Sidebar.dashboard')}</span>
                   </Link>
@@ -52,7 +59,7 @@ export default function MainLayout({ children }: { children: ReactNode }) {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild tooltip={t('Sidebar.transactions')}>
-                  <Link href="/transactions">
+                  <Link href={`/${locale}/transactions`}>
                     <ArrowLeftRight />
                     <span className="flex-1">{t('Sidebar.transactions')}</span>
                   </Link>
@@ -60,7 +67,7 @@ export default function MainLayout({ children }: { children: ReactNode }) {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild tooltip={t('Sidebar.hpp')}>
-                  <Link href="/hpp">
+                  <Link href={`/${locale}/hpp`}>
                     <Calculator />
                     <span className="flex-1">{t('Sidebar.hpp')}</span>
                   </Link>
@@ -68,7 +75,7 @@ export default function MainLayout({ children }: { children: ReactNode }) {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild tooltip={t('Sidebar.userGuide')}>
-                  <Link href="/user-guide">
+                  <Link href={`/${locale}/user-guide`}>
                     <BookUser />
                     <span className="flex-1">{t('Sidebar.userGuide')}</span>
                   </Link>
@@ -93,12 +100,12 @@ export default function MainLayout({ children }: { children: ReactNode }) {
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>{t('Header.language')}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <Link href={pathname} locale="id" >
+                <Link href={getLocalizedPath('id')} >
                   <DropdownMenuItem>
                     Indonesia
                   </DropdownMenuItem>
                 </Link>
-                <Link href={pathname} locale="en" >
+                <Link href={getLocalizedPath('en')} >
                   <DropdownMenuItem>
                     English
                   </DropdownMenuItem>
