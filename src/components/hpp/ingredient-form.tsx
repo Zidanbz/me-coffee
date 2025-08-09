@@ -37,9 +37,9 @@ export default function IngredientForm() {
     resolver: zodResolver(ingredientFormSchema),
     defaultValues: {
       name: "",
-      quantity: undefined,
+      quantity: "" as any,
       unit: "pcs",
-      price: undefined,
+      price: "" as any,
     },
   })
 
@@ -50,7 +50,12 @@ export default function IngredientForm() {
         title: "Ingredient Added!",
         description: `${data.name} has been added to your stock.`,
       });
-      form.reset()
+      form.reset({
+        name: "",
+        quantity: "" as any,
+        unit: "pcs",
+        price: "" as any,
+      })
       router.refresh();
     } catch (error) {
       toast({

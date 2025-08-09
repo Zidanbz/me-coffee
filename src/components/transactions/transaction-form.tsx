@@ -58,7 +58,7 @@ export default function TransactionForm() {
       type: "income",
       description: "",
       category: "",
-      amount: undefined,
+      amount: "" as any,
     },
   });
 
@@ -73,7 +73,7 @@ export default function TransactionForm() {
         type: "income",
         description: "",
         category: "",
-        amount: undefined,
+        amount: "" as any,
         paymentMethod: undefined,
         date: undefined
       });
