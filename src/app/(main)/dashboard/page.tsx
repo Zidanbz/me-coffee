@@ -1,36 +1,15 @@
 
-"use client";
-
 import StatCard from '@/components/dashboard/stat-card';
 import RevenueChart from '@/components/dashboard/revenue-chart';
 import { TrendingUp, TrendingDown, Package, DollarSign } from 'lucide-react';
-import { useEffect, useState } from 'react';
 import { getTransactions, getIngredients } from '@/lib/firestore';
 import type { Transaction, Ingredient } from '@/types';
-import { Skeleton } from '@/components/ui/skeleton';
 
-export default function DashboardPage() {
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [inventory, setInventory] = useState<Ingredient[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const [transactionsData, inventoryData] = await Promise.all([
-          getTransactions(),
-          getIngredients()
-        ]);
-        setTransactions(transactionsData);
-        setInventory(inventoryData);
-      } catch (error) {
-        console.error("Failed to fetch dashboard data:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchData();
-  }, []);
+export default async function DashboardPage() {
+  const [transactions, inventory] = await Promise.all([
+    getTransactions(),
+    getIngredients()
+  ]);
 
   const today = new Date();
   const yesterday = new Date(today);
@@ -69,23 +48,6 @@ export default function DashboardPage() {
   const yesterdayProfit = yesterdaysRevenue - yesterdaysExpenses;
   const profitChange = yesterdayProfit === 0 ? 100 : ((profit - yesterdayProfit) / yesterdayProfit) * 100;
 
-  if (loading) {
-    return (
-      <div className="flex flex-col gap-6">
-        <h1 className="text-2xl font-bold md:text-3xl font-headline">Dashboard</h1>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <CardSkeleton />
-          <CardSkeleton />
-          <CardSkeleton />
-          <CardSkeleton />
-        </div>
-        <div className="grid grid-cols-1 gap-6">
-          <Skeleton className="h-[450px] w-full" />
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="flex flex-col gap-6">
       <h1 className="text-2xl font-bold md:text-3xl font-headline">Dashboard</h1>
@@ -121,16 +83,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-
-const CardSkeleton = () => (
-  <div className="p-6 bg-card rounded-lg shadow-sm">
-    <div className="flex flex-row items-center justify-between pb-2 space-y-0">
-      <Skeleton className="h-4 w-24" />
-      <Skeleton className="h-4 w-4" />
-    </div>
-    <div className="space-y-2">
-      <Skeleton className="h-7 w-32" />
-      <Skeleton className="h-3 w-40" />
-    </div>
-  </div>
-);

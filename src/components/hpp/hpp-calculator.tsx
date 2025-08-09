@@ -1,40 +1,22 @@
 
 "use client";
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Trash2, PlusCircle } from 'lucide-react';
-import { getIngredients } from '@/lib/firestore';
 import type { Ingredient } from '@/types';
-import { Skeleton } from '../ui/skeleton';
 
 interface RecipeIngredient extends Ingredient {
   usedQuantity: number;
 }
 
-export default function HppCalculator() {
-  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
-  const [loading, setLoading] = useState(true);
+export default function HppCalculator({ ingredients }: { ingredients: Ingredient[] }) {
   const [recipeIngredients, setRecipeIngredients] = useState<RecipeIngredient[]>([]);
   const [selectedIngredient, setSelectedIngredient] = useState<string>('');
-
-  useEffect(() => {
-    async function fetchIngredients() {
-      try {
-        const items = await getIngredients();
-        setIngredients(items);
-      } catch (error) {
-        console.error("Failed to fetch ingredients:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchIngredients();
-  }, []);
 
   const handleAddIngredient = () => {
     if (!selectedIngredient) return;
@@ -73,23 +55,19 @@ export default function HppCalculator() {
       </CardHeader>
       <CardContent>
         <div className="flex gap-2 mb-4">
-          <Select value={selectedIngredient} onValueChange={setSelectedIngredient}>
+          <Select value={selectedIngredient} onValueChange={(value) => setSelectedIngredient(value)}>
             <SelectTrigger>
               <SelectValue placeholder="Pilih bahan baku..." />
             </SelectTrigger>
             <SelectContent>
-              {loading ? (
-                <SelectItem value="loading" disabled>Memuat bahan...</SelectItem>
-              ) : (
-                ingredients.map(ingredient => (
+              {ingredients.map(ingredient => (
                   <SelectItem key={ingredient.id} value={ingredient.id}>
                     {ingredient.name} ({ingredient.quantity} {ingredient.unit})
                   </SelectItem>
-                ))
-              )}
+                ))}
             </SelectContent>
           </Select>
-          <Button onClick={handleAddIngredient} disabled={!selectedIngredient || loading}>
+          <Button onClick={handleAddIngredient} disabled={!selectedIngredient}>
             <PlusCircle className="w-4 h-4 mr-2" />
             Tambah
           </Button>

@@ -13,28 +13,8 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Badge } from "@/components/ui/badge"
 import type { Transaction } from "@/types"
 import { format } from "date-fns"
-import { useEffect, useState } from "react";
-import { getTransactions } from "@/lib/firestore";
-import { Skeleton } from "../ui/skeleton";
 
-export default function TransactionsTable() {
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchTransactions() {
-      try {
-        const items = await getTransactions();
-        setTransactions(items);
-      } catch (error) {
-        console.error("Failed to fetch transactions:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchTransactions();
-  }, []);
-
+export default function TransactionsTable({ transactions }: { transactions: Transaction[] }) {
   return (
     <Card>
       <CardHeader>
@@ -53,17 +33,13 @@ export default function TransactionsTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-             {loading ? (
-              Array.from({ length: 5 }).map((_, i) => (
-                <TableRow key={i}>
-                  <TableCell><Skeleton className="h-6 w-20 rounded-full" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-24" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-16" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-24" /></TableCell>
-                  <TableCell className="hidden md:table-cell"><Skeleton className="h-4 w-48" /></TableCell>
+             {transactions.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} className="h-24 text-center">
+                    No transactions found.
+                  </TableCell>
                 </TableRow>
-              ))
-            ) : (
+             ) : (
               transactions.map((transaction) => (
                 <TableRow key={transaction.id}>
                   <TableCell>

@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 import { format } from "date-fns"
+import { useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -49,6 +50,7 @@ type TransactionFormValues = z.infer<typeof transactionFormSchema>
 
 export default function TransactionForm() {
   const { toast } = useToast();
+  const router = useRouter();
   const form = useForm<TransactionFormValues>({
     resolver: zodResolver(transactionFormSchema),
     defaultValues: {
@@ -67,6 +69,7 @@ export default function TransactionForm() {
       });
       form.reset();
       form.setValue("date", undefined);
+      router.refresh();
     } catch (error) {
        toast({
         title: "Error",

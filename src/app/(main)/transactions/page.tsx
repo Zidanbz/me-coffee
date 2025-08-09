@@ -1,7 +1,11 @@
 import TransactionForm from "@/components/transactions/transaction-form";
 import TransactionsTable from "@/components/transactions/transactions-table";
+import { getTransactions } from "@/lib/firestore";
+import type { Transaction } from "@/types";
 
-export default function TransactionsPage() {
+export default async function TransactionsPage() {
+  const transactions: Transaction[] = await getTransactions();
+  
   return (
     <div className="flex flex-col gap-6">
       <h1 className="text-2xl font-bold md:text-3xl font-headline">Transactions</h1>
@@ -10,7 +14,7 @@ export default function TransactionsPage() {
           <TransactionForm />
         </div>
         <div className="lg:col-span-3">
-          <TransactionsTable />
+          <TransactionsTable transactions={transactions} />
         </div>
       </div>
     </div>

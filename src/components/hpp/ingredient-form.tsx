@@ -4,6 +4,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
+import { useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -31,6 +32,7 @@ type IngredientFormValues = z.infer<typeof ingredientFormSchema>
 
 export default function IngredientForm() {
   const { toast } = useToast()
+  const router = useRouter();
   const form = useForm<IngredientFormValues>({
     resolver: zodResolver(ingredientFormSchema),
     defaultValues: {
@@ -49,6 +51,7 @@ export default function IngredientForm() {
         description: `${data.name} telah ditambahkan ke stok Anda.`,
       });
       form.reset()
+      router.refresh();
     } catch (error) {
       toast({
         title: "Error",

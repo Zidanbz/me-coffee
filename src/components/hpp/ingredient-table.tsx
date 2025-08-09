@@ -11,28 +11,8 @@ import {
 } from "@/components/ui/table"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
 import type { Ingredient } from "@/types"
-import { useEffect, useState } from "react";
-import { getIngredients } from "@/lib/firestore";
-import { Skeleton } from "../ui/skeleton";
 
-export default function IngredientTable() {
-  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchIngredients() {
-      try {
-        const items = await getIngredients();
-        setIngredients(items);
-      } catch (error) {
-        console.error("Failed to fetch ingredients:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchIngredients();
-  }, []);
-
+export default function IngredientTable({ ingredients }: { ingredients: Ingredient[] }) {
   return (
     <Card>
       <CardHeader>
@@ -50,15 +30,12 @@ export default function IngredientTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {loading ? (
-              Array.from({ length: 5 }).map((_, i) => (
-                <TableRow key={i}>
-                  <TableCell><Skeleton className="h-4 w-32" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-16" /></TableCell>
-                  <TableCell className="hidden md:table-cell"><Skeleton className="h-4 w-20" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-20" /></TableCell>
-                </TableRow>
-              ))
+            {ingredients.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={4} className="h-24 text-center">
+                  Belum ada bahan.
+                </TableCell>
+              </TableRow>
             ) : (
               ingredients.map((item) => (
                 <TableRow key={item.id}>
