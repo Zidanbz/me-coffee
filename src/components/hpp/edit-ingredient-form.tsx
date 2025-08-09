@@ -88,63 +88,65 @@ export default function EditIngredientForm({ isOpen, setIsOpen, ingredient }: Ed
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="grid gap-4 py-4">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Ingredient Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g., Coffee Beans, Milk" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <div className="grid grid-cols-2 gap-4">
+            <div className="max-h-[70vh] overflow-y-auto p-1 pr-4">
+              <div className="grid gap-4 py-4">
                 <FormField
                   control={form.control}
-                  name="quantity"
+                  name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Total Quantity</FormLabel>
+                      <FormLabel>Ingredient Name</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="0" {...field} />
+                        <Input placeholder="e.g., Coffee Beans, Milk" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="quantity"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Total Quantity</FormLabel>
+                        <FormControl>
+                          <Input type="number" placeholder="0" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="unit"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Unit</FormLabel>
+                        <FormControl>
+                          <Input placeholder="gr, ml, pcs" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
                 <FormField
                   control={form.control}
-                  name="unit"
+                  name="price"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Unit</FormLabel>
+                      <FormLabel>Total Price (for the quantity above)</FormLabel>
                       <FormControl>
-                        <Input placeholder="gr, ml, pcs" {...field} />
+                        <Input type="number" placeholder="0.00" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
-              <FormField
-                control={form.control}
-                name="price"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Total Price (for the quantity above)</FormLabel>
-                    <FormControl>
-                      <Input type="number" placeholder="0.00" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
             </div>
-            <DialogFooter>
+            <DialogFooter className="pt-4">
               <Button type="submit" disabled={form.formState.isSubmitting}>
                 {form.formState.isSubmitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                 Save Changes
