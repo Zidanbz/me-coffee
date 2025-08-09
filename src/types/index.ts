@@ -1,3 +1,4 @@
+
 export type Transaction = {
   id: string;
   type: 'income' | 'expense';
@@ -6,11 +7,19 @@ export type Transaction = {
   amount: number;
   description: string;
   paymentMethod: 'Cash' | 'Card' | 'Online';
+  createdAt: any;
 };
 
-export type ClientTransaction = Omit<Transaction, 'date'> & {
+export type ClientTransaction = Omit<Transaction, 'date' | 'createdAt'> & {
   date: string;
+  createdAt?: {
+    seconds: number;
+    nanoseconds: number;
+  }
 };
+
+export type UpdateTransaction = Partial<Omit<Transaction, 'id' | 'createdAt'>>;
+
 
 export type Ingredient = {
   id: string;
