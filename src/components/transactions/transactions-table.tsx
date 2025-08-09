@@ -57,9 +57,11 @@ export default function TransactionsTable({ transactions: initialTransactions }:
     if (!selectedTransaction) return;
     try {
       await deleteTransaction(selectedTransaction.id);
+      
       setTransactions((prevTransactions) => 
         prevTransactions.filter((t) => t.id !== selectedTransaction.id)
       );
+
       toast({
         title: "Transaction Deleted",
         description: "The transaction has been successfully deleted.",
@@ -78,7 +80,7 @@ export default function TransactionsTable({ transactions: initialTransactions }:
   };
   
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 2 }).format(value);
+    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(value);
   };
 
   return (
