@@ -5,6 +5,7 @@ import { type ReactNode, useState, useEffect } from 'react';
 import StatCard from '@/components/dashboard/stat-card';
 import type { ClientTransaction, Ingredient } from '@/types';
 import dynamic from 'next/dynamic';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { TrendingUp, TrendingDown, Package, DollarSign } from 'lucide-react';
 
@@ -66,7 +67,7 @@ export default function DashboardClient({ transactions, inventory }: DashboardCl
       .filter(t => t.type === 'income')
       .reduce((sum, t) => sum + t.amount, 0);
     
-    const revenueChange = yesterdaysRevenue === 0 ? 100 : ((todaysRevenue - yesterdaysRevenue) / yesterdaysRevenue) * 100;
+    const revenueChange = yesterdaysRevenue === 0 ? (todaysRevenue > 0 ? 100 : 0) : ((todaysRevenue - yesterdaysRevenue) / yesterdaysRevenue) * 100;
 
     const todaysExpenses = todayTransactions
       .filter(t => t.type === 'expense')
@@ -85,19 +86,19 @@ export default function DashboardClient({ transactions, inventory }: DashboardCl
     const newStats = [
       {
         title: "Today's Revenue",
-        value: `$${todaysRevenue.toFixed(2)}`,
+        value: `Rp ${todaysRevenue.toFixed(2)}`,
         description: `${revenueChange >= 0 ? '+' : ''}${revenueChange.toFixed(1)}% from yesterday`,
         icon: <DollarSign className="w-4 h-4 text-muted-foreground" />,
       },
       {
         title: "Today's Expenses",
-        value: `$${todaysExpenses.toFixed(2)}`,
+        value: `Rp ${todaysExpenses.toFixed(2)}`,
         description: `${expenseChange >= 0 ? '+' : ''}${expenseChange.toFixed(1)}% from yesterday`,
         icon: <TrendingDown className="w-4 h-4 text-muted-foreground" />,
       },
       {
         title: "Profit",
-        value: `$${profit.toFixed(2)}`,
+        value: `Rp ${profit.toFixed(2)}`,
         description: `${profitChange >= 0 ? '+' : ''}${profitChange.toFixed(1)}% from yesterday`,
         icon: <TrendingUp className="w-4 h-4 text-muted-foreground" />,
       },
@@ -127,10 +128,10 @@ export default function DashboardClient({ transactions, inventory }: DashboardCl
           ))
         ) : (
           <>
-            <Skeleton className="h-28" />
-            <Skeleton className="h-28" />
-            <Skeleton className="h-28" />
-            <Skeleton className="h-28" />
+            <StatCardSkeleton />
+            <StatCardSkeleton />
+            <StatCardSkeleton />
+            <StatCardSkeleton />
           </>
         )}
       </div>

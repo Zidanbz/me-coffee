@@ -21,7 +21,7 @@ function CustomBarChart({ data, dataKey, xDataKey }: { data: any[], dataKey: str
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data} margin={{ top: 20, right: 20, bottom: 20, left: 0 }}>
           <XAxis dataKey={xDataKey} stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
-          <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `$${value}`} />
+          <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `Rp${value}`} />
           <Tooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
           <Bar dataKey={dataKey} fill="var(--color-income)" radius={[4, 4, 0, 0]} />
         </BarChart>
