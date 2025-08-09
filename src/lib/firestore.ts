@@ -46,12 +46,19 @@ export async function getTransactions(): Promise<ClientTransaction[]> {
   const transactions: ClientTransaction[] = [];
   querySnapshot.forEach((doc) => {
     const data = doc.data();
-    const createdAtTimestamp = data.createdAt as Timestamp;
+    
+    // Fallback for date and createdAt if they are null or undefined
+    const dateTimestamp = data.date as Timestamp | undefined;
+    const createdAtTimestamp = data.createdAt as Timestamp | undefined;
+
+    const date = dateTimestamp ? dateTimestamp.toDate() : new Date();
+    const createdAt = createdAtTimestamp ? createdAtTimestamp.toDate() : new Date();
+
     transactions.push({ 
       id: doc.id, 
       ...data,
-      date: (data.date as Timestamp).toDate().toISOString(),
-      createdAt: createdAtTimestamp ? createdAtTimestamp.toDate().toISOString() : new Date().toISOString()
+      date: date.toISOString(),
+      createdAt: createdAt.toISOString(),
     } as ClientTransaction);
   });
   // sort by date descending
