@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Table,
   TableBody,
@@ -31,12 +31,17 @@ import { useToast } from '@/hooks/use-toast';
 import { deleteTransaction } from '@/lib/firestore';
 import EditTransactionForm from './edit-transaction-form';
 
-export default function TransactionsTable({ transactions }: { transactions: ClientTransaction[] }) {
+export default function TransactionsTable({ transactions: initialTransactions }: { transactions: ClientTransaction[] }) {
   const router = useRouter();
   const { toast } = useToast();
+  const [transactions, setTransactions] = useState(initialTransactions);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState<ClientTransaction | null>(null);
+
+  useEffect(() => {
+    setTransactions(initialTransactions);
+  }, [initialTransactions]);
 
   const handleEditClick = (transaction: ClientTransaction) => {
     setSelectedTransaction(transaction);
@@ -52,6 +57,9 @@ export default function TransactionsTable({ transactions }: { transactions: Clie
     if (!selectedTransaction) return;
     try {
       await deleteTransaction(selectedTransaction.id);
+      setTransactions((prevTransactions) => 
+        prevTransactions.filter((t) => t.id !== selectedTransaction.id)
+      );
       toast({
         title: "Transaction Deleted",
         description: "The transaction has been successfully deleted.",
