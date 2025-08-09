@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Trash2, PlusCircle } from 'lucide-react';
 import type { Ingredient } from '@/types';
+import { useTranslations } from 'next-intl';
 
 interface RecipeIngredient extends Ingredient {
   usedQuantity: number;
@@ -17,6 +18,7 @@ interface RecipeIngredient extends Ingredient {
 export default function HppCalculator({ ingredients }: { ingredients: Ingredient[] }) {
   const [recipeIngredients, setRecipeIngredients] = useState<RecipeIngredient[]>([]);
   const [selectedIngredient, setSelectedIngredient] = useState<string>('');
+  const t = useTranslations('HPP');
 
   const handleAddIngredient = () => {
     if (!selectedIngredient) return;
@@ -45,19 +47,19 @@ export default function HppCalculator({ ingredients }: { ingredients: Ingredient
 
   const totalHpp = useMemo(() => {
     return recipeIngredients.reduce((total, ingredient) => total + calculateIngredientCost(ingredient), 0);
-  }, [recipeIngredients]);
+  }, [recipeIngredients, calculateIngredientCost]);
 
   return (
     <Card className="lg:col-span-2">
       <CardHeader>
-        <CardTitle className="font-headline">Kalkulator HPP Resep</CardTitle>
-        <CardDescription>Buat resep baru dan hitung HPP per produk.</CardDescription>
+        <CardTitle className="font-headline">{t('hppCalculator')}</CardTitle>
+        <CardDescription>{t('hppCalculatorDesc')}</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="flex gap-2 mb-4">
           <Select value={selectedIngredient} onValueChange={(value) => setSelectedIngredient(value)}>
             <SelectTrigger>
-              <SelectValue placeholder="Pilih bahan baku..." />
+              <SelectValue placeholder={t('selectIngredient')} />
             </SelectTrigger>
             <SelectContent>
               {ingredients.map(ingredient => (
@@ -69,7 +71,7 @@ export default function HppCalculator({ ingredients }: { ingredients: Ingredient
           </Select>
           <Button onClick={handleAddIngredient} disabled={!selectedIngredient}>
             <PlusCircle className="w-4 h-4 mr-2" />
-            Tambah
+            {t('add')}
           </Button>
         </div>
         
@@ -77,10 +79,10 @@ export default function HppCalculator({ ingredients }: { ingredients: Ingredient
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Bahan</TableHead>
-                <TableHead>Kuantitas Pakai</TableHead>
-                <TableHead>Satuan</TableHead>
-                <TableHead className="text-right">Harga</TableHead>
+                <TableHead>{t('recipeTableIngredient')}</TableHead>
+                <TableHead>{t('recipeTableUsedQuantity')}</TableHead>
+                <TableHead>{t('recipeTableUnit')}</TableHead>
+                <TableHead className="text-right">{t('recipeTablePrice')}</TableHead>
                 <TableHead></TableHead>
               </TableRow>
             </TableHeader>
@@ -88,7 +90,7 @@ export default function HppCalculator({ ingredients }: { ingredients: Ingredient
               {recipeIngredients.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={5} className="text-center text-muted-foreground">
-                    Belum ada bahan di resep ini.
+                    {t('noRecipeIngredients')}
                   </TableCell>
                 </TableRow>
               ) : (
@@ -106,7 +108,7 @@ export default function HppCalculator({ ingredients }: { ingredients: Ingredient
                     </TableCell>
                     <TableCell>{item.unit}</TableCell>
                     <TableCell className="text-right">
-                      Rp {calculateIngredientCost(item).toFixed(2)}
+                      Rp {calculateIngredientCost(item).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </TableCell>
                     <TableCell className="text-right">
                       <Button variant="ghost" size="icon" onClick={() => handleRemoveIngredient(item.id)}>
@@ -122,9 +124,9 @@ export default function HppCalculator({ ingredients }: { ingredients: Ingredient
       </CardContent>
       <CardFooter className="flex justify-end">
         <div className="text-right">
-          <p className="text-muted-foreground">Total HPP per Produk</p>
+          <p className="text-muted-foreground">{t('totalHpp')}</p>
           <p className="text-2xl font-bold font-headline">
-            Rp {totalHpp.toFixed(2)}
+            Rp {totalHpp.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </p>
         </div>
       </CardFooter>

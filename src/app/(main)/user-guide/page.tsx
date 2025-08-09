@@ -1,122 +1,124 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { ArrowRight } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 
-export default function UserGuidePage() {
+
+export default async function UserGuidePage() {
+  const t = await getTranslations('UserGuide');
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-bold md:text-3xl font-headline">Panduan Pengguna</h1>
+      <h1 className="text-2xl font-bold md:text-3xl font-headline">{t('title')}</h1>
       <Card>
         <CardHeader>
-          <CardTitle>Selamat Datang di Me Coffee Dashboard!</CardTitle>
+          <CardTitle>{t('welcomeTitle')}</CardTitle>
           <CardDescription>
-            Panduan ini akan membantu Anda memahami dan menggunakan semua fitur yang tersedia untuk mengelola bisnis kopi Anda secara efisien.
+           {t('welcomeDesc')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="item-1">
-              <AccordionTrigger className="text-lg font-semibold">1. Dashboard</AccordionTrigger>
+              <AccordionTrigger className="text-lg font-semibold">{t('dashboardTitle')}</AccordionTrigger>
               <AccordionContent className="space-y-4">
                 <p>
-                  Dashboard adalah halaman utama Anda untuk melihat ringkasan bisnis secara cepat.
+                  {t('dashboardContent1')}
                 </p>
                 <ul className="list-disc pl-6 space-y-2">
-                  <li><strong>Ringkasan Statistik:</strong> Anda akan melihat 4 kartu utama yang menampilkan:
+                  <li><strong>{t('dashboardContent2')}</strong>
                     <ul className="list-disc pl-6 mt-2">
-                        <li><strong>Pendapatan Hari Ini:</strong> Total pemasukan yang tercatat hari ini.</li>
-                        <li><strong>Pengeluaran Hari Ini:</strong> Total pengeluaran yang tercatat hari ini.</li>
-                        <li><strong>Keuntungan:</strong> Selisih antara pendapatan dan pengeluaran hari ini.</li>
-                        <li><strong>Stok Tersedia:</strong> Jumlah jenis bahan baku yang ada di inventaris Anda.</li>
+                        <li><strong>{t('dashboardContent3')}</strong></li>
+                        <li><strong>{t('dashboardContent4')}</strong></li>
+                        <li><strong>{t('dashboardContent5')}</strong></li>
+                        <li><strong>{t('dashboardContent6')}</strong></li>
                     </ul>
                   </li>
                   <li>
-                    <strong>Grafik Pendapatan:</strong> Di bawah ringkasan, terdapat grafik interaktif untuk melacak pendapatan Anda dalam periode <strong>Harian</strong>, <strong>Mingguan</strong>, atau <strong>Bulanan</strong>.
+                    <strong>{t('dashboardContent7')}</strong>
                   </li>
                 </ul>
               </AccordionContent>
             </AccordionItem>
 
             <AccordionItem value="item-2">
-              <AccordionTrigger className="text-lg font-semibold">2. Mengelola Transaksi</AccordionTrigger>
+              <AccordionTrigger className="text-lg font-semibold">{t('transactionsTitle')}</AccordionTrigger>
               <AccordionContent className="space-y-4">
                  <p>
-                  Halaman Transaksi adalah tempat Anda mencatat semua pemasukan dan pengeluaran.
+                  {t('transactionsContent1')}
                 </p>
                 <div className="space-y-3">
-                    <h4 className="font-semibold">Menambah Transaksi Baru</h4>
+                    <h4 className="font-semibold">{t('transactionsContent2')}</h4>
                     <ol className="list-decimal pl-6 space-y-2">
-                        <li>Navigasi ke halaman <strong>Transaksi</strong> dari menu.</li>
-                        <li>Gunakan form <strong>"Add Transaction"</strong>.</li>
-                        <li>Isi semua field yang diperlukan:
+                        <li>{t('transactionsContent3')}</li>
+                        <li>{t('transactionsContent4')}</li>
+                        <li>{t('transactionsContent5')}
                             <ul className="list-disc pl-6 mt-2 space-y-1">
-                            <li><strong>Tipe Transaksi:</strong> Pilih "Income" (Pemasukan) atau "Expense" (Pengeluaran).</li>
-                            <li><strong>Tanggal:</strong> Tanggal transaksi terjadi.</li>
-                            <li><strong>Jumlah:</strong> Nominal transaksi.</li>
-                            <li><strong>Kategori:</strong> Kategori transaksi (misal: "Penjualan Minuman", "Sewa Tempat").</li>
-                            <li><strong>Deskripsi:</strong> Penjelasan singkat mengenai transaksi.</li>
-                             <li><strong>Metode Pembayaran:</strong> Pilih "Cash", "Card", atau "Online".</li>
+                            <li><strong>{t('transactionsContent6')}</strong></li>
+                            <li><strong>{t('transactionsContent7')}</strong></li>
+                            <li><strong>{t('transactionsContent8')}</strong></li>
+                            <li><strong>{t('transactionsContent9')}</strong></li>
+                            <li><strong>{t('transactionsContent10')}</strong></li>
+                             <li><strong>{t('transactionsContent11')}</strong></li>
                             </ul>
                         </li>
-                        <li>Klik <strong>"Add Transaction"</strong> untuk menyimpan. Transaksi baru akan langsung muncul di tabel di sebelah kanan.</li>
+                        <li>{t('transactionsContent12')}</li>
                     </ol>
                 </div>
                  <div className="space-y-3">
-                    <h4 className="font-semibold">Mengedit atau Menghapus Transaksi</h4>
+                    <h4 className="font-semibold">{t('transactionsContent13')}</h4>
                      <ol className="list-decimal pl-6 space-y-2">
-                        <li>Di tabel "Recent Transactions", cari transaksi yang ingin Anda ubah.</li>
-                        <li>Di kolom "Actions", Anda akan melihat dua ikon:
+                        <li>{t('transactionsContent14')}</li>
+                        <li>{t('transactionsContent15')}
                             <ul className="list-disc pl-6 mt-2 space-y-1">
-                                <li><strong>Ikon Pensil:</strong> Klik untuk mengedit. Sebuah dialog akan muncul dengan data transaksi yang bisa Anda ubah.</li>
-                                <li><strong>Ikon Sampah:</strong> Klik untuk menghapus. Sebuah dialog konfirmasi akan muncul untuk memastikan Anda tidak salah hapus.</li>
+                                <li><strong>{t('transactionsContent16')}</strong></li>
+                                <li><strong>{t('transactionsContent17')}</strong></li>
                             </ul>
                         </li>
-                        <li>Perubahan akan langsung terlihat setelah Anda menyimpan atau mengkonfirmasi.</li>
+                        <li>{t('transactionsContent18')}</li>
                     </ol>
                 </div>
               </AccordionContent>
             </AccordionItem>
             
             <AccordionItem value="item-3">
-              <AccordionTrigger className="text-lg font-semibold">3. Perhitungan HPP (Harga Pokok Penjualan)</AccordionTrigger>
+              <AccordionTrigger className="text-lg font-semibold">{t('hppTitle')}</AccordionTrigger>
               <AccordionContent className="space-y-4">
                 <p>
-                  Halaman HPP membantu Anda mengelola stok bahan baku dan menghitung modal untuk setiap produk yang Anda jual. Halaman ini terbagi menjadi 3 bagian utama.
+                  {t('hppContent1')}
                 </p>
                 <div className="space-y-3">
-                    <h4 className="font-semibold">Bagian 1: Tambah Bahan Baku</h4>
+                    <h4 className="font-semibold">{t('hppContent2')}</h4>
                     <ol className="list-decimal pl-6 space-y-2">
-                        <li>Gunakan form <strong>"Tambah Bahan Baku"</strong> untuk mendaftarkan bahan yang Anda beli.</li>
+                        <li>{t('hppContent3')}</li>
                         <li>
-                            <strong>Isi detail bahan:</strong>
+                            <strong>{t('hppContent4')}</strong>
                             <ul className="list-disc pl-6 mt-2 space-y-1">
-                                <li><strong>Nama Bahan:</strong> Nama untuk bahan (misal: "Biji Kopi Arabika", "Susu Full Cream 1L").</li>
-                                <li><strong>Kuantitas Total:</strong> Jumlah bahan yang dibeli dalam satu transaksi (misal: 1000 untuk 1000 gram).</li>
-                                <li><strong>Satuan:</strong> Satuan untuk kuantitas (misal: gr, ml, pcs).</li>
-                                <li><strong>Harga Total:</strong> Harga keseluruhan untuk kuantitas tersebut.</li>
+                                <li><strong>{t('hppContent5')}</strong></li>
+                                <li><strong>{t('hppContent6')}</strong></li>
+                                <li><strong>{t('hppContent7')}</strong></li>
+                                <li><strong>{t('hppContent8')}</strong></li>
                             </ul>
                         </li>
                          <li>
-                            <strong>Contoh:</strong> Jika Anda membeli 1 kg (1000 gr) biji kopi seharga Rp 150.000, Anda akan mengisi: 1000 gr, dengan harga 150000. Sistem akan otomatis menghitung harga per gram.
+                            <strong>{t('hppContent9')}</strong>
                         </li>
-                        <li>Klik <strong>"Tambah Bahan"</strong>. Bahan akan muncul di tabel "Stok Bahan Baku".</li>
+                        <li>{t('hppContent10')}</li>
                     </ol>
                 </div>
                  <div className="space-y-3">
-                    <h4 className="font-semibold">Bagian 2: Stok Bahan Baku</h4>
+                    <h4 className="font-semibold">{t('hppContent11')}</h4>
                      <p>
-                        Tabel ini menampilkan semua bahan yang telah Anda tambahkan. Di sini, Anda juga bisa <strong>mengedit</strong> atau <strong>menghapus</strong> bahan baku menggunakan ikon di kolom "Aksi", sama seperti pada halaman transaksi.
+                       {t('hppContent12')}
                     </p>
                 </div>
                 <div className="space-y-3">
-                    <h4 className="font-semibold">Bagian 3: Kalkulator HPP Resep</h4>
+                    <h4 className="font-semibold">{t('hppContent13')}</h4>
                      <ol className="list-decimal pl-6 space-y-2">
-                        <li>Pilih bahan dari dropdown <strong>"Pilih bahan baku..."</strong> dan klik <strong>"Tambah"</strong> untuk memasukkannya ke resep.</li>
+                        <li>{t('hppContent14')}</li>
                         <li>
-                           Di dalam tabel resep, masukkan <strong>"Kuantitas Pakai"</strong> sesuai dengan jumlah yang dibutuhkan untuk membuat <strong>satu porsi</strong> produk.
+                           {t('hppContent15')}
                         </li>
                         <li>
-                           Total HPP (modal per produk) akan dihitung secara otomatis di bagian kanan bawah. Anda bisa bereksperimen dengan kuantitas untuk menyesuaikan resep dan biaya.
+                           {t('hppContent16')}
                         </li>
                     </ol>
                 </div>

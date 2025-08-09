@@ -20,6 +20,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { useToast } from "@/hooks/use-toast"
 import { Loader2 } from "lucide-react"
 import { addIngredient } from "@/lib/firestore"
+import { useTranslations } from "next-intl"
 
 const ingredientFormSchema = z.object({
   name: z.string().min(2, "Nama bahan harus minimal 2 karakter."),
@@ -33,6 +34,7 @@ type IngredientFormValues = z.infer<typeof ingredientFormSchema>
 export default function IngredientForm() {
   const { toast } = useToast()
   const router = useRouter();
+  const t = useTranslations('HPP');
   const form = useForm<IngredientFormValues>({
     resolver: zodResolver(ingredientFormSchema),
     defaultValues: {
@@ -64,8 +66,8 @@ export default function IngredientForm() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="font-headline">Tambah Bahan Baku</CardTitle>
-        <CardDescription>Tambahkan bahan baku atau supply baru ke stok Anda.</CardDescription>
+        <CardTitle className="font-headline">{t('addIngredient')}</CardTitle>
+        <CardDescription>{t('addIngredientDesc')}</CardDescription>
       </CardHeader>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -75,9 +77,9 @@ export default function IngredientForm() {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nama Bahan</FormLabel>
+                  <FormLabel>{t('ingredientName')}</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., Biji Kopi, Susu" {...field} />
+                    <Input placeholder={t('ingredientNamePlaceholder')} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -89,7 +91,7 @@ export default function IngredientForm() {
                 name="quantity"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Kuantitas Total</FormLabel>
+                    <FormLabel>{t('totalQuantity')}</FormLabel>
                     <FormControl>
                       <Input type="number" placeholder="0" {...field} value={field.value ?? ""} />
                     </FormControl>
@@ -102,9 +104,9 @@ export default function IngredientForm() {
                 name="unit"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Satuan</FormLabel>
+                    <FormLabel>{t('unit')}</FormLabel>
                     <FormControl>
-                      <Input placeholder="kg, L, pcs" {...field} />
+                      <Input placeholder={t('unitPlaceholder')} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -116,7 +118,7 @@ export default function IngredientForm() {
               name="price"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Harga Total (untuk kuantitas di atas)</FormLabel>
+                  <FormLabel>{t('totalPrice')}</FormLabel>
                   <FormControl>
                     <Input type="number" placeholder="0.00" {...field} value={field.value ?? ""} />
                   </FormControl>
@@ -128,7 +130,7 @@ export default function IngredientForm() {
           <CardFooter>
             <Button type="submit" disabled={form.formState.isSubmitting}>
                {form.formState.isSubmitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-              Tambah Bahan
+              {t('addIngredientButton')}
             </Button>
           </CardFooter>
         </form>

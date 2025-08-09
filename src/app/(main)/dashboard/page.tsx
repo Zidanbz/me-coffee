@@ -1,4 +1,3 @@
-
 import { getTransactions, getIngredients } from '@/lib/firestore';
 import DashboardClient from '@/components/dashboard/dashboard-client';
 

@@ -29,6 +29,7 @@ import { useToast } from "@/hooks/use-toast"
 import { Loader2 } from "lucide-react"
 import { updateIngredient } from "@/lib/firestore"
 import type { Ingredient } from "@/types"
+import { useTranslations } from "next-intl"
 
 const ingredientFormSchema = z.object({
   name: z.string().min(2, "Nama bahan harus minimal 2 karakter."),
@@ -48,6 +49,7 @@ interface EditIngredientFormProps {
 export default function EditIngredientForm({ isOpen, setIsOpen, ingredient }: EditIngredientFormProps) {
   const { toast } = useToast()
   const router = useRouter();
+  const t = useTranslations('HPP');
   const form = useForm<IngredientFormValues>({
     resolver: zodResolver(ingredientFormSchema),
     defaultValues: {
@@ -81,9 +83,9 @@ export default function EditIngredientForm({ isOpen, setIsOpen, ingredient }: Ed
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit Bahan Baku</DialogTitle>
+          <DialogTitle>{t('editIngredient')}</DialogTitle>
           <DialogDescription>
-            Lakukan perubahan pada bahan baku Anda. Klik simpan jika sudah selesai.
+            {t('editIngredientDesc')}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -94,9 +96,9 @@ export default function EditIngredientForm({ isOpen, setIsOpen, ingredient }: Ed
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Nama Bahan</FormLabel>
+                    <FormLabel>{t('ingredientName')}</FormLabel>
                     <FormControl>
-                      <Input placeholder="e.g., Biji Kopi, Susu" {...field} />
+                      <Input placeholder={t('ingredientNamePlaceholder')} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -108,7 +110,7 @@ export default function EditIngredientForm({ isOpen, setIsOpen, ingredient }: Ed
                   name="quantity"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Kuantitas Total</FormLabel>
+                      <FormLabel>{t('totalQuantity')}</FormLabel>
                       <FormControl>
                         <Input type="number" placeholder="0" {...field} />
                       </FormControl>
@@ -121,9 +123,9 @@ export default function EditIngredientForm({ isOpen, setIsOpen, ingredient }: Ed
                   name="unit"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Satuan</FormLabel>
+                      <FormLabel>{t('unit')}</FormLabel>
                       <FormControl>
-                        <Input placeholder="kg, L, pcs" {...field} />
+                        <Input placeholder={t('unitPlaceholder')} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -135,7 +137,7 @@ export default function EditIngredientForm({ isOpen, setIsOpen, ingredient }: Ed
                 name="price"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Harga Total</FormLabel>
+                    <FormLabel>{t('totalPrice')}</FormLabel>
                     <FormControl>
                       <Input type="number" placeholder="0.00" {...field} />
                     </FormControl>
@@ -147,7 +149,7 @@ export default function EditIngredientForm({ isOpen, setIsOpen, ingredient }: Ed
             <DialogFooter>
               <Button type="submit" disabled={form.formState.isSubmitting}>
                 {form.formState.isSubmitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-                Simpan Perubahan
+                {t('saveChanges')}
               </Button>
             </DialogFooter>
           </form>

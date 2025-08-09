@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ChartTooltipContent, ChartContainer } from "@/components/ui/chart";
 import type { ClientTransaction } from "@/types";
 import { subDays, format } from 'date-fns';
+import { useTranslations } from "next-intl";
 
 const chartConfig = {
   income: {
@@ -32,6 +33,7 @@ function CustomBarChart({ data, dataKey, xDataKey }: { data: any[], dataKey: str
 
 export default function RevenueChart({ transactions }: { transactions: ClientTransaction[] }) {
   const now = new Date();
+  const t = useTranslations('Dashboard');
 
   // Daily
   const dailyData = Array.from({ length: 7 }, (_, i) => {
@@ -77,15 +79,15 @@ export default function RevenueChart({ transactions }: { transactions: ClientTra
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="font-headline">Revenue Overview</CardTitle>
-        <CardDescription>Track your income over different periods.</CardDescription>
+        <CardTitle className="font-headline">{t('revenueOverview')}</CardTitle>
+        <CardDescription>{t('trackIncome')}</CardDescription>
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="daily">
           <TabsList className="grid w-full grid-cols-3 mb-4">
-            <TabsTrigger value="daily">Daily</TabsTrigger>
-            <TabsTrigger value="weekly">Weekly</TabsTrigger>
-            <TabsTrigger value="monthly">Monthly</TabsTrigger>
+            <TabsTrigger value="daily">{t('daily')}</TabsTrigger>
+            <TabsTrigger value="weekly">{t('weekly')}</TabsTrigger>
+            <TabsTrigger value="monthly">{t('monthly')}</TabsTrigger>
           </TabsList>
           <TabsContent value="daily">
             <CustomBarChart data={dailyData} dataKey="income" xDataKey="date" />

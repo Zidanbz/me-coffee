@@ -28,6 +28,7 @@ import type { Ingredient } from "@/types"
 import { useToast } from '@/hooks/use-toast';
 import { deleteIngredient } from '@/lib/firestore';
 import EditIngredientForm from './edit-ingredient-form';
+import { useTranslations } from 'next-intl';
 
 export default function IngredientTable({ ingredients }: { ingredients: Ingredient[] }) {
   const router = useRouter();
@@ -35,6 +36,7 @@ export default function IngredientTable({ ingredients }: { ingredients: Ingredie
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedIngredient, setSelectedIngredient] = useState<Ingredient | null>(null);
+  const t = useTranslations('HPP');
 
   const handleEditClick = (ingredient: Ingredient) => {
     setSelectedIngredient(ingredient);
@@ -72,24 +74,24 @@ export default function IngredientTable({ ingredients }: { ingredients: Ingredie
     <>
       <Card>
         <CardHeader>
-          <CardTitle className="font-headline">Stok Bahan Baku</CardTitle>
-          <CardDescription>Daftar semua bahan baku yang telah Anda masukkan.</CardDescription>
+          <CardTitle className="font-headline">{t('ingredientStock')}</CardTitle>
+          <CardDescription>{t('ingredientStockDesc')}</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Nama Bahan</TableHead>
-                <TableHead>Kuantitas</TableHead>
-                <TableHead>Harga/Satuan</TableHead>
-                <TableHead className="text-right">Aksi</TableHead>
+                <TableHead>{t('stockTableName')}</TableHead>
+                <TableHead>{t('stockTableQuantity')}</TableHead>
+                <TableHead>{t('stockTablePricePerUnit')}</TableHead>
+                <TableHead className="text-right">{t('stockTableActions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {ingredients.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={4} className="h-24 text-center">
-                    Belum ada bahan.
+                    {t('noIngredients')}
                   </TableCell>
                 </TableRow>
               ) : (
@@ -98,7 +100,7 @@ export default function IngredientTable({ ingredients }: { ingredients: Ingredie
                     <TableCell className="font-medium">{item.name}</TableCell>
                     <TableCell>{item.quantity} {item.unit}</TableCell>
                     <TableCell>
-                      Rp {(item.price / item.quantity).toFixed(2)} / {item.unit}
+                      Rp {(item.price / item.quantity).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} / {item.unit}
                     </TableCell>
                     <TableCell className="text-right">
                        <Button variant="ghost" size="icon" onClick={() => handleEditClick(item)}>
@@ -127,14 +129,14 @@ export default function IngredientTable({ ingredients }: { ingredients: Ingredie
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Anda yakin?</AlertDialogTitle>
+            <AlertDialogTitle>{t('deleteConfirmTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              Tindakan ini tidak bisa dibatalkan. Ini akan menghapus bahan baku secara permanen.
+              {t('deleteConfirmDesc')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Batal</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeleteConfirm}>Hapus</AlertDialogAction>
+            <AlertDialogCancel>{t('cancelButton')}</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteConfirm}>{t('deleteButton')}</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
