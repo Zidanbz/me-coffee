@@ -35,7 +35,9 @@ export default function IngredientForm() {
     resolver: zodResolver(ingredientFormSchema),
     defaultValues: {
       name: "",
+      quantity: undefined,
       unit: "pcs",
+      price: undefined,
     },
   })
 
@@ -86,7 +88,7 @@ export default function IngredientForm() {
                   <FormItem>
                     <FormLabel>Kuantitas Total</FormLabel>
                     <FormControl>
-                      <Input type="number" placeholder="0" {...field} />
+                      <Input type="number" placeholder="0" {...field} value={field.value ?? ""} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -113,7 +115,7 @@ export default function IngredientForm() {
                 <FormItem>
                   <FormLabel>Harga Total (untuk kuantitas di atas)</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="0.00" {...field} />
+                    <Input type="number" placeholder="0.00" {...field} value={field.value ?? ""} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
