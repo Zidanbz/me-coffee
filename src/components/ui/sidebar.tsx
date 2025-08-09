@@ -2,11 +2,12 @@
 
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
-import { ChevronLeft, ChevronsLeft, ChevronsRight, Menu, X, PanelLeftClose, PanelLeftOpen } from "lucide-react"
+import { Menu, X, PanelLeftClose, PanelLeftOpen } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button, type ButtonProps } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 interface SidebarContextProps {
   isOpen: boolean
@@ -26,8 +27,16 @@ export function useSidebar() {
 }
 
 export function SidebarProvider({ children }: { children: React.ReactNode }) {
+  const isMobile = useIsMobile()
   const [isOpen, setIsOpen] = React.useState(false)
   const [isCollapsed, setIsCollapsed] = React.useState(true)
+
+  React.useEffect(() => {
+    if (isMobile) {
+      setIsCollapsed(true)
+      setIsOpen(false)
+    }
+  }, [isMobile])
 
   return (
     <SidebarContext.Provider value={{ isOpen, setIsOpen, isCollapsed, setIsCollapsed }}>
@@ -56,11 +65,13 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function Sidebar({ className, ...props }: SidebarProps) {
   const { isCollapsed, isOpen } = useSidebar()
+  const isMobile = useIsMobile()
+  
   return (
     <aside
       className={cn(
         sidebarVariants({
-          collapsed: isCollapsed,
+          collapsed: isCollapsed || isMobile,
           state: isOpen ? "open" : "closed",
         }),
         "md:translate-x-0",
@@ -102,7 +113,9 @@ export function SidebarTrigger({ className, ...props }: ButtonProps) {
   }
 
 export function SidebarHeader({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("flex h-14 items-center border-b border-sidebar-border", className)} {...props} />
+  const { isCollapsed } = useSidebar()
+  const isMobile = useIsMobile()
+  return <div className={cn("flex h-14 items-center border-b border-sidebar-border", (isCollapsed || isMobile) ? 'justify-center' : 'px-6', className)} {...props} />
 }
 
 export function SidebarContent({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
@@ -137,13 +150,14 @@ interface SidebarMenuButtonProps extends ButtonProps {
 
 export function SidebarMenuButton({ className, tooltip, children, ...props }: SidebarMenuButtonProps) {
     const { isCollapsed } = useSidebar()
+    const isMobile = useIsMobile()
 
     const button = (
         <Button
             variant="ghost"
             className={cn(
                 "justify-start gap-3 w-full text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-                isCollapsed && "justify-center",
+                (isCollapsed || isMobile) && "justify-center",
                 className
             )}
             {...props}
@@ -152,7 +166,7 @@ export function SidebarMenuButton({ className, tooltip, children, ...props }: Si
         </Button>
     )
 
-    if (isCollapsed && tooltip) {
+    if (isCollapsed || isMobile) {
         return (
             <Tooltip>
                 <TooltipTrigger asChild>{button}</TooltipTrigger>

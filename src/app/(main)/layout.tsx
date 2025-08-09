@@ -1,3 +1,5 @@
+"use client";
+
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { SidebarProvider, Sidebar, SidebarTrigger, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter, SidebarOverlay } from '@/components/ui/sidebar';
@@ -6,6 +8,22 @@ import BottomNav from '@/components/layout/bottom-nav';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
+import { useSidebar } from '@/components/ui/sidebar';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { cn } from '@/lib/utils';
+
+function HeaderTitle() {
+  const { isCollapsed } = useSidebar();
+  const isMobile = useIsMobile();
+
+  return (
+     <div className={cn("flex items-center gap-2", (isCollapsed || isMobile) && "justify-center")}>
+        <Coffee className="h-8 w-8 text-sidebar-foreground" />
+        {(!isCollapsed && !isMobile) && <h1 className="text-xl font-bold text-sidebar-foreground font-headline flex-1">Me Coffee</h1>}
+    </div>
+  )
+}
+
 
 export default function MainLayout({ children }: { children: ReactNode }) {
   return (
@@ -13,10 +31,7 @@ export default function MainLayout({ children }: { children: ReactNode }) {
       <div className="flex h-screen overflow-hidden">
         <Sidebar>
           <SidebarHeader>
-            <div className="flex items-center gap-2 p-2 w-full justify-center">
-              <Coffee className="h-8 w-8 text-sidebar-foreground" />
-              <h1 className="text-xl font-bold text-sidebar-foreground font-headline flex-1">Me Coffee</h1>
-            </div>
+            <HeaderTitle />
           </SidebarHeader>
           <SidebarContent>
             <SidebarMenu>
