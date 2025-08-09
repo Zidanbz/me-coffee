@@ -3,6 +3,7 @@ import StatCard from '@/components/dashboard/stat-card';
 import { TrendingUp, TrendingDown, Package, DollarSign } from 'lucide-react';
 import { getTransactions, getIngredients } from '@/lib/firestore';
 import DashboardClient from '@/components/dashboard/dashboard-client';
+import type { Transaction } from '@/types';
 
 export default async function DashboardPage() {
   const [transactions, inventory] = await Promise.all([
@@ -74,5 +75,7 @@ export default async function DashboardPage() {
     },
   ];
 
-  return <DashboardClient stats={stats} transactions={transactions} />;
+  const clientTransactions = transactions.map(t => ({...t, date: t.date.toISOString()}));
+
+  return <DashboardClient stats={stats} transactions={clientTransactions} />;
 }

@@ -6,6 +6,8 @@ import type { Transaction } from "@/types";
 export default async function TransactionsPage() {
   const transactions: Transaction[] = await getTransactions();
   
+  const clientTransactions = transactions.map(t => ({...t, date: t.date.toISOString()}));
+
   return (
     <div className="flex flex-col gap-6">
       <h1 className="text-2xl font-bold md:text-3xl font-headline">Transactions</h1>
@@ -14,7 +16,7 @@ export default async function TransactionsPage() {
           <TransactionForm />
         </div>
         <div className="lg:col-span-3">
-          <TransactionsTable transactions={transactions} />
+          <TransactionsTable transactions={clientTransactions} />
         </div>
       </div>
     </div>

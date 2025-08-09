@@ -8,6 +8,10 @@ export type Transaction = {
   paymentMethod: 'Cash' | 'Card' | 'Online';
 };
 
+export type ClientTransaction = Omit<Transaction, 'date'> & {
+  date: string;
+};
+
 export type Ingredient = {
   id: string;
   name: string;

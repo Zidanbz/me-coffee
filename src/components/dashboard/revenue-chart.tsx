@@ -5,7 +5,7 @@ import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recha
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ChartTooltipContent, ChartContainer } from "@/components/ui/chart";
-import type { Transaction } from "@/types";
+import type { ClientTransaction } from "@/types";
 import { subDays, format } from 'date-fns';
 
 const chartConfig = {
@@ -30,24 +30,32 @@ function CustomBarChart({ data, dataKey, xDataKey }: { data: any[], dataKey: str
   )
 }
 
-export default function RevenueChart({ transactions }: { transactions: Transaction[] }) {
+export default function RevenueChart({ transactions }: { transactions: ClientTransaction[] }) {
   const now = new Date();
 
   // Daily
   const dailyData = Array.from({ length: 7 }, (_, i) => {
     const date = subDays(now, 6 - i);
     const dayIncome = transactions
-      .filter(t => t.type === 'income' && t.date && format(new Date(t.date), 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd'))
+      .filter(t => {
+        if (!t.date) return false;
+        const transactionDate = new Date(t.date);
+        return t.type === 'income' && format(transactionDate, 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd');
+      })
       .reduce((sum, t) => sum + t.amount, 0);
     return { date: format(date, 'EEE'), income: dayIncome };
   });
 
   // Weekly
   const weeklyData = Array.from({ length: 4 }, (_, i) => {
-    const weekStart = subDays(now, (3 - i) * 7);
-    const weekEnd = subDays(now, (2 - i) * 7);
+    const weekEnd = subDays(now, (3 - i) * 7);
+    const weekStart = subDays(weekEnd, 7);
     const weekIncome = transactions
-      .filter(t => t.type === 'income' && t.date && new Date(t.date) >= weekStart && new Date(t.date) < weekEnd)
+      .filter(t => {
+          if (!t.date) return false;
+          const transactionDate = new Date(t.date);
+          return t.type === 'income' && transactionDate >= weekStart && transactionDate < weekEnd;
+      })
       .reduce((sum, t) => sum + t.amount, 0);
     return { week: `Week ${i + 1}`, income: weekIncome };
   });
@@ -57,7 +65,11 @@ export default function RevenueChart({ transactions }: { transactions: Transacti
     const month = (now.getMonth() - (5 - i) + 12) % 12;
     const year = now.getFullYear() - (now.getMonth() < 5 - i ? 1 : 0);
     const monthIncome = transactions
-      .filter(t => t.type === 'income' && t.date && new Date(t.date).getMonth() === month && new Date(t.date).getFullYear() === year)
+      .filter(t => {
+        if (!t.date) return false;
+        const transactionDate = new Date(t.date);
+        return t.type === 'income' && transactionDate.getMonth() === month && transactionDate.getFullYear() === year
+      })
       .reduce((sum, t) => sum + t.amount, 0);
     return { month: format(new Date(year, month), 'MMM'), income: monthIncome };
   });

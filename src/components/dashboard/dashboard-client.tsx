@@ -3,7 +3,7 @@
 
 import type { ReactNode } from 'react';
 import StatCard from '@/components/dashboard/stat-card';
-import type { Transaction } from '@/types';
+import type { ClientTransaction } from '@/types';
 import dynamic from 'next/dynamic';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -21,7 +21,7 @@ type Stat = {
 
 type DashboardClientProps = {
   stats: Stat[];
-  transactions: Transaction[];
+  transactions: ClientTransaction[];
 };
 
 export default function DashboardClient({ stats, transactions }: DashboardClientProps) {

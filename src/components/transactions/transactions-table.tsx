@@ -11,10 +11,10 @@ import {
 } from "@/components/ui/table"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import type { Transaction } from "@/types"
+import type { ClientTransaction } from "@/types"
 import { format } from "date-fns"
 
-export default function TransactionsTable({ transactions }: { transactions: Transaction[] }) {
+export default function TransactionsTable({ transactions }: { transactions: ClientTransaction[] }) {
   return (
     <Card>
       <CardHeader>
