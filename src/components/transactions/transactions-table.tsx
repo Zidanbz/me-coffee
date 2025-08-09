@@ -25,7 +25,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import type { ClientTransaction } from "@/types"
-import { format } from "date-fns"
+import { format, parseISO } from "date-fns"
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { deleteTransaction } from '@/lib/firestore';
@@ -110,7 +110,7 @@ export default function TransactionsTable({ transactions }: { transactions: Clie
                     <TableCell className={transaction.type === 'income' ? 'text-green-600' : 'text-red-600'}>
                       {formatCurrency(transaction.amount)}
                     </TableCell>
-                    <TableCell>{transaction.date ? format(new Date(transaction.date), "MMM d, yyyy") : 'No date'}</TableCell>
+                    <TableCell>{transaction.date ? format(parseISO(transaction.date), "MMM d, yyyy") : 'No date'}</TableCell>
                     <TableCell className="text-right">
                        <Button variant="ghost" size="icon" onClick={() => handleEditClick(transaction)}>
                           <Pencil className="w-4 h-4" />
