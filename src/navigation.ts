@@ -9,19 +9,13 @@ export const localePrefix = 'always'; // Default
 // The `pathnames` object holds pairs of internal
 // and external paths, separated by locale.
 export const pathnames = {
-  // If all locales use the same path, use
-  // the special `/` key.
-  '/': '/',
- 
-  // If locales use different paths, specify
-  // them separately for each locale.
   '/dashboard': {
     en: '/dashboard',
-    id: '/dasbor'
+    id: '/dashboard'
   },
   '/transactions': {
     en: '/transactions',
-    id: '/transaksi'
+    id: '/transactions'
   },
   '/hpp': {
     en: '/hpp',
@@ -29,7 +23,7 @@ export const pathnames = {
   },
   '/user-guide': {
     en: '/user-guide',
-    id: '/panduan-pengguna'
+    id: '/user-guide'
   }
 } satisfies Pathnames<typeof locales>;
  
