@@ -69,8 +69,6 @@ export default function DashboardPage() {
   const yesterdayProfit = yesterdaysRevenue - yesterdaysExpenses;
   const profitChange = yesterdayProfit === 0 ? 100 : ((profit - yesterdayProfit) / yesterdayProfit) * 100;
 
-  const lowStockItems = inventory.filter(item => item.quantity < item.minStock).length;
-
   if (loading) {
     return (
       <div className="flex flex-col gap-6">
@@ -113,7 +111,7 @@ export default function DashboardPage() {
         <StatCard
           title="Items in Stock"
           value={inventory.length.toString()}
-          description={`${lowStockItems} items are running low`}
+          description={`${inventory.length} ingredients available`}
           icon={<Package className="w-4 h-4 text-muted-foreground" />}
         />
       </div>

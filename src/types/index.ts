@@ -14,5 +14,4 @@ export type Ingredient = {
   quantity: number;
   unit: string;
   price: number;
-  minStock: number;
 };

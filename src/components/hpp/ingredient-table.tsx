@@ -10,7 +10,6 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import type { Ingredient } from "@/types"
 import { useEffect, useState } from "react";
 import { getIngredients } from "@/lib/firestore";
@@ -37,8 +36,8 @@ export default function IngredientTable() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="font-headline">Status Bahan Baku</CardTitle>
-        <CardDescription>Level stok terkini untuk semua bahan baku Anda.</CardDescription>
+        <CardTitle className="font-headline">Stok Bahan Baku</CardTitle>
+        <CardDescription>Daftar semua bahan baku yang telah Anda masukkan.</CardDescription>
       </CardHeader>
       <CardContent>
         <Table>
@@ -46,8 +45,8 @@ export default function IngredientTable() {
             <TableRow>
               <TableHead>Nama Bahan</TableHead>
               <TableHead>Kuantitas</TableHead>
-              <TableHead className="hidden md:table-cell">Harga/Satuan</TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead className="hidden md:table-cell">Total Harga</TableHead>
+              <TableHead>Harga/Satuan</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -56,8 +55,8 @@ export default function IngredientTable() {
                 <TableRow key={i}>
                   <TableCell><Skeleton className="h-4 w-32" /></TableCell>
                   <TableCell><Skeleton className="h-4 w-16" /></TableCell>
-                  <TableCell className="hidden md:table-cell"><Skeleton className="h-4 w-12" /></TableCell>
-                  <TableCell><Skeleton className="h-6 w-20 rounded-full" /></TableCell>
+                  <TableCell className="hidden md:table-cell"><Skeleton className="h-4 w-20" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-20" /></TableCell>
                 </TableRow>
               ))
             ) : (
@@ -65,13 +64,9 @@ export default function IngredientTable() {
                 <TableRow key={item.id}>
                   <TableCell className="font-medium">{item.name}</TableCell>
                   <TableCell>{item.quantity} {item.unit}</TableCell>
-                  <TableCell className="hidden md:table-cell">${item.price.toFixed(2)}</TableCell>
+                  <TableCell className="hidden md:table-cell">Rp {item.price.toFixed(2)}</TableCell>
                   <TableCell>
-                    {item.quantity < item.minStock ? (
-                      <Badge variant="destructive">Stok Sedikit</Badge>
-                    ) : (
-                      <Badge variant="secondary">Stok Aman</Badge>
-                    )}
+                    Rp {(item.price / item.quantity).toFixed(2)} / {item.unit}
                   </TableCell>
                 </TableRow>
               ))

@@ -25,7 +25,6 @@ const ingredientFormSchema = z.object({
   quantity: z.coerce.number().positive("Kuantitas harus angka positif."),
   unit: z.string().min(1, "Satuan diperlukan (e.g., kg, L, pcs)."),
   price: z.coerce.number().positive("Harga harus angka positif."),
-  minStock: z.coerce.number().int().nonnegative("Stok minimum harus angka non-negatif."),
 })
 
 type IngredientFormValues = z.infer<typeof ingredientFormSchema>
@@ -37,7 +36,6 @@ export default function IngredientForm() {
     defaultValues: {
       name: "",
       unit: "pcs",
-      minStock: 10,
     },
   })
 
@@ -86,7 +84,7 @@ export default function IngredientForm() {
                 name="quantity"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Kuantitas</FormLabel>
+                    <FormLabel>Kuantitas Total</FormLabel>
                     <FormControl>
                       <Input type="number" placeholder="0" {...field} />
                     </FormControl>
@@ -108,34 +106,19 @@ export default function IngredientForm() {
                 )}
               />
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="price"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Harga (per satuan)</FormLabel>
-                    <FormControl>
-                      <Input type="number" placeholder="0.00" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="minStock"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Stok Minimum</FormLabel>
-                    <FormControl>
-                      <Input type="number" placeholder="10" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+            <FormField
+              control={form.control}
+              name="price"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Harga Total (untuk kuantitas di atas)</FormLabel>
+                  <FormControl>
+                    <Input type="number" placeholder="0.00" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </CardContent>
           <CardFooter>
             <Button type="submit" disabled={form.formState.isSubmitting}>
