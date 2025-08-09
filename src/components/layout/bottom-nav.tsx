@@ -4,19 +4,17 @@
 import { usePathname } from 'next/navigation';
 import { LayoutDashboard, ArrowLeftRight, Calculator, BookUser } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useTranslations } from 'next-intl';
-import { Link } from '@/navigation';
+import Link from 'next/link';
 
 
 export default function BottomNav() {
   const pathname = usePathname();
-  const t = useTranslations('BottomNav');
 
   const navItems = [
-    { href: '/dashboard', icon: LayoutDashboard, label: t('dashboard') },
-    { href: '/transactions', icon: ArrowLeftRight, label: t('transactions') },
-    { href: '/hpp', icon: Calculator, label: t('hpp') },
-    { href: '/user-guide', icon: BookUser, label: t('guide') },
+    { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+    { href: '/transactions', icon: ArrowLeftRight, label: 'Transactions' },
+    { href: '/hpp', icon: Calculator, label: 'HPP' },
+    { href: '/user-guide', icon: BookUser, label: 'Guide' },
   ];
 
   return (

@@ -30,7 +30,6 @@ import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { deleteTransaction } from '@/lib/firestore';
 import EditTransactionForm from './edit-transaction-form';
-import { useTranslations } from 'next-intl';
 
 export default function TransactionsTable({ transactions }: { transactions: ClientTransaction[] }) {
   const router = useRouter();
@@ -38,7 +37,6 @@ export default function TransactionsTable({ transactions }: { transactions: Clie
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState<ClientTransaction | null>(null);
-  const t = useTranslations('Transactions');
 
   const handleEditClick = (transaction: ClientTransaction) => {
     setSelectedTransaction(transaction);
@@ -55,14 +53,14 @@ export default function TransactionsTable({ transactions }: { transactions: Clie
     try {
       await deleteTransaction(selectedTransaction.id);
       toast({
-        title: "Transaksi Dihapus",
-        description: "Transaksi telah berhasil dihapus.",
+        title: "Transaction Deleted",
+        description: "The transaction has been successfully deleted.",
       });
       router.refresh();
     } catch (error) {
       toast({
         title: "Error",
-        description: "Gagal menghapus transaksi.",
+        description: "Failed to delete transaction.",
         variant: "destructive",
       });
     } finally {
@@ -79,25 +77,25 @@ export default function TransactionsTable({ transactions }: { transactions: Clie
     <>
       <Card>
         <CardHeader>
-          <CardTitle className="font-headline">{t('recentTransactions')}</CardTitle>
-          <CardDescription>{t('recentTransactionsDesc')}</CardDescription>
+          <CardTitle className="font-headline">Recent Transactions</CardTitle>
+          <CardDescription>A list of your most recent income and expenses.</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>{t('tableType')}</TableHead>
-                <TableHead>{t('tableCategory')}</TableHead>
-                <TableHead>{t('tableAmount')}</TableHead>
-                <TableHead>{t('tableDate')}</TableHead>
-                <TableHead className="text-right">{t('tableActions')}</TableHead>
+                <TableHead>Type</TableHead>
+                <TableHead>Category</TableHead>
+                <TableHead>Amount</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {transactions.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={5} className="h-24 text-center">
-                      {t('noTransactions')}
+                      No transactions found.
                     </TableCell>
                   </TableRow>
               ) : (
@@ -105,7 +103,7 @@ export default function TransactionsTable({ transactions }: { transactions: Clie
                   <TableRow key={transaction.id}>
                     <TableCell>
                       <Badge variant={transaction.type === 'income' ? 'secondary' : 'destructive'}>
-                        {t(transaction.type)}
+                        {transaction.type}
                       </Badge>
                     </TableCell>
                     <TableCell className="font-medium">{transaction.category}</TableCell>
@@ -140,14 +138,14 @@ export default function TransactionsTable({ transactions }: { transactions: Clie
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{t('deleteConfirmTitle')}</AlertDialogTitle>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              {t('deleteConfirmDesc')}
+              This action cannot be undone. This will permanently delete the transaction data.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{t('cancelButton')}</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeleteConfirm}>{t('deleteButton')}</AlertDialogAction>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteConfirm}>Delete</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

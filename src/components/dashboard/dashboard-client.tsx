@@ -8,7 +8,6 @@ import dynamic from 'next/dynamic';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { TrendingUp, TrendingDown, Package, DollarSign } from 'lucide-react';
-import { useTranslations } from 'next-intl';
 
 const RevenueChart = dynamic(() => import('@/components/dashboard/revenue-chart'), {
   ssr: false,
@@ -45,7 +44,6 @@ function StatCardSkeleton() {
 
 export default function DashboardClient({ transactions, inventory }: DashboardClientProps) {
   const [stats, setStats] = useState<Stat[] | null>(null);
-  const t = useTranslations('Dashboard');
 
   useEffect(() => {
     const today = new Date();
@@ -91,36 +89,36 @@ export default function DashboardClient({ transactions, inventory }: DashboardCl
 
     const newStats = [
       {
-        title: t('todaysRevenue'),
+        title: "Today's Revenue",
         value: formatCurrency(todaysRevenue),
-        description: `${revenueChange >= 0 ? '+' : ''}${revenueChange.toFixed(1)}${t('fromYesterday')}`,
+        description: `${revenueChange >= 0 ? '+' : ''}${revenueChange.toFixed(1)}% from yesterday`,
         icon: <DollarSign className="w-4 h-4 text-muted-foreground" />,
       },
       {
-        title: t('todaysExpenses'),
+        title: "Today's Expenses",
         value: formatCurrency(todaysExpenses),
-        description: `${expenseChange >= 0 ? '+' : ''}${expenseChange.toFixed(1)}${t('fromYesterday')}`,
+        description: `${expenseChange >= 0 ? '+' : ''}${expenseChange.toFixed(1)}% from yesterday`,
         icon: <TrendingDown className="w-4 h-4 text-muted-foreground" />,
       },
       {
-        title: t('profit'),
+        title: "Profit",
         value: formatCurrency(profit),
-        description: `${profitChange >= 0 ? '+' : ''}${profitChange.toFixed(1)}${t('fromYesterday')}`,
+        description: `${profitChange >= 0 ? '+' : ''}${profitChange.toFixed(1)}% from yesterday`,
         icon: <TrendingUp className="w-4 h-4 text-muted-foreground" />,
       },
       {
-        title: t('itemsInStock'),
+        title: "Items in Stock",
         value: inventory.length.toString(),
-        description: t('ingredientsAvailable', {count: inventory.length}),
+        description: `${inventory.length} ingredients available`,
         icon: <Package className="w-4 h-4 text-muted-foreground" />,
       },
     ];
     setStats(newStats);
-  }, [transactions, inventory, t]);
+  }, [transactions, inventory]);
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-bold md:text-3xl font-headline">{t('title')}</h1>
+      <h1 className="text-2xl font-bold md:text-3xl font-headline">Dashboard</h1>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {stats ? (
           stats.map((stat) => (

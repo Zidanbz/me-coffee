@@ -36,7 +36,6 @@ import { Calendar as CalendarIcon, Loader2 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { updateTransaction } from "@/lib/firestore"
 import type { ClientTransaction, UpdateTransaction } from "@/types"
-import { useTranslations } from "next-intl"
 
 const transactionFormSchema = z.object({
   type: z.enum(["income", "expense"], {
@@ -69,7 +68,6 @@ interface EditTransactionFormProps {
 export default function EditTransactionForm({ isOpen, setIsOpen, transaction }: EditTransactionFormProps) {
   const { toast } = useToast();
   const router = useRouter();
-  const t = useTranslations('Transactions');
   const form = useForm<TransactionFormValues>({
     resolver: zodResolver(transactionFormSchema),
     defaultValues: {
@@ -102,9 +100,9 @@ export default function EditTransactionForm({ isOpen, setIsOpen, transaction }: 
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
        <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>{t('editTransaction')}</DialogTitle>
+            <DialogTitle>Edit Transaction</DialogTitle>
             <DialogDescription>
-              {t('editTransactionDesc')}
+              Make changes to your transaction here. Click save when you're done.
             </DialogDescription>
           </DialogHeader>
           <Form {...form}>
@@ -115,7 +113,7 @@ export default function EditTransactionForm({ isOpen, setIsOpen, transaction }: 
                   name="type"
                   render={({ field }) => (
                     <FormItem className="space-y-3">
-                      <FormLabel>{t('transactionType')}</FormLabel>
+                      <FormLabel>Transaction Type</FormLabel>
                       <FormControl>
                         <RadioGroup
                           onValueChange={field.onChange}
@@ -126,13 +124,13 @@ export default function EditTransactionForm({ isOpen, setIsOpen, transaction }: 
                             <FormControl>
                               <RadioGroupItem value="income" />
                             </FormControl>
-                            <FormLabel className="font-normal">{t('income')}</FormLabel>
+                            <FormLabel className="font-normal">Income</FormLabel>
                           </FormItem>
                           <FormItem className="flex items-center space-x-3 space-y-0">
                             <FormControl>
                               <RadioGroupItem value="expense" />
                             </FormControl>
-                            <FormLabel className="font-normal">{t('expense')}</FormLabel>
+                            <FormLabel className="font-normal">Expense</FormLabel>
                           </FormItem>
                         </RadioGroup>
                       </FormControl>
@@ -147,7 +145,7 @@ export default function EditTransactionForm({ isOpen, setIsOpen, transaction }: 
                     name="date"
                     render={({ field }) => (
                       <FormItem className="flex flex-col">
-                        <FormLabel>{t('date')}</FormLabel>
+                        <FormLabel>Date</FormLabel>
                         <Popover>
                           <PopoverTrigger asChild>
                             <FormControl>
@@ -161,7 +159,7 @@ export default function EditTransactionForm({ isOpen, setIsOpen, transaction }: 
                                 {field.value ? (
                                   format(field.value, "PPP")
                                 ) : (
-                                  <span>{t('pickDate')}</span>
+                                  <span>Pick a date</span>
                                 )}
                                 <CalendarIcon className="w-4 h-4 ml-auto opacity-50" />
                               </Button>
@@ -189,7 +187,7 @@ export default function EditTransactionForm({ isOpen, setIsOpen, transaction }: 
                     name="amount"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>{t('amount')}</FormLabel>
+                        <FormLabel>Amount</FormLabel>
                         <FormControl>
                           <Input type="number" placeholder="0.00" {...field} />
                         </FormControl>
@@ -204,9 +202,9 @@ export default function EditTransactionForm({ isOpen, setIsOpen, transaction }: 
                   name="category"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>{t('category')}</FormLabel>
+                      <FormLabel>Category</FormLabel>
                       <FormControl>
-                        <Input placeholder={t('categoryPlaceholder')} {...field} />
+                        <Input placeholder="e.g., Coffee Sales, Rent, Supplies" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -218,9 +216,9 @@ export default function EditTransactionForm({ isOpen, setIsOpen, transaction }: 
                   name="description"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>{t('description')}</FormLabel>
+                      <FormLabel>Description</FormLabel>
                       <FormControl>
-                        <Input placeholder={t('descriptionPlaceholder')} {...field} />
+                        <Input placeholder="Brief description of the transaction" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -232,17 +230,17 @@ export default function EditTransactionForm({ isOpen, setIsOpen, transaction }: 
                   name="paymentMethod"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>{t('paymentMethod')}</FormLabel>
+                      <FormLabel>Payment Method</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder={t('selectPaymentMethod')} />
+                            <SelectValue placeholder="Select a payment method" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="Cash">{t('cash')}</SelectItem>
-                          <SelectItem value="Card">{t('card')}</SelectItem>
-                          <SelectItem value="Online">{t('online')}</SelectItem>
+                          <SelectItem value="Cash">Cash</SelectItem>
+                          <SelectItem value="Card">Card</SelectItem>
+                          <SelectItem value="Online">Online</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -253,7 +251,7 @@ export default function EditTransactionForm({ isOpen, setIsOpen, transaction }: 
               <DialogFooter>
                 <Button type="submit" disabled={form.formState.isSubmitting}>
                   {form.formState.isSubmitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-                  {t('saveChanges')}
+                  Save Changes
                 </Button>
               </DialogFooter>
             </form>

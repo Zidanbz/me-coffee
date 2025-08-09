@@ -20,13 +20,12 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { useToast } from "@/hooks/use-toast"
 import { Loader2 } from "lucide-react"
 import { addIngredient } from "@/lib/firestore"
-import { useTranslations } from "next-intl"
 
 const ingredientFormSchema = z.object({
-  name: z.string().min(2, "Nama bahan harus minimal 2 karakter."),
-  quantity: z.coerce.number().positive("Kuantitas harus angka positif."),
-  unit: z.string().min(1, "Satuan diperlukan (e.g., kg, L, pcs)."),
-  price: z.coerce.number().positive("Harga harus angka positif."),
+  name: z.string().min(2, "Ingredient name must be at least 2 characters."),
+  quantity: z.coerce.number().positive("Quantity must be a positive number."),
+  unit: z.string().min(1, "Unit is required (e.g., kg, L, pcs)."),
+  price: z.coerce.number().positive("Price must be a positive number."),
 })
 
 type IngredientFormValues = z.infer<typeof ingredientFormSchema>
@@ -34,7 +33,6 @@ type IngredientFormValues = z.infer<typeof ingredientFormSchema>
 export default function IngredientForm() {
   const { toast } = useToast()
   const router = useRouter();
-  const t = useTranslations('HPP');
   const form = useForm<IngredientFormValues>({
     resolver: zodResolver(ingredientFormSchema),
     defaultValues: {
@@ -49,15 +47,15 @@ export default function IngredientForm() {
     try {
       await addIngredient(data);
       toast({
-        title: "Bahan Ditambahkan!",
-        description: `${data.name} telah ditambahkan ke stok Anda.`,
+        title: "Ingredient Added!",
+        description: `${data.name} has been added to your stock.`,
       });
       form.reset()
       router.refresh();
     } catch (error) {
       toast({
         title: "Error",
-        description: "Gagal menambahkan bahan.",
+        description: "Failed to add ingredient.",
         variant: "destructive"
       });
     }
@@ -66,8 +64,8 @@ export default function IngredientForm() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="font-headline">{t('addIngredient')}</CardTitle>
-        <CardDescription>{t('addIngredientDesc')}</CardDescription>
+        <CardTitle className="font-headline">Add Ingredient</CardTitle>
+        <CardDescription>Add new raw materials or supplies to your stock.</CardDescription>
       </CardHeader>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -77,9 +75,9 @@ export default function IngredientForm() {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('ingredientName')}</FormLabel>
+                  <FormLabel>Ingredient Name</FormLabel>
                   <FormControl>
-                    <Input placeholder={t('ingredientNamePlaceholder')} {...field} />
+                    <Input placeholder="e.g., Coffee Beans, Milk" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -91,7 +89,7 @@ export default function IngredientForm() {
                 name="quantity"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t('totalQuantity')}</FormLabel>
+                    <FormLabel>Total Quantity</FormLabel>
                     <FormControl>
                       <Input type="number" placeholder="0" {...field} value={field.value ?? ""} />
                     </FormControl>
@@ -104,9 +102,9 @@ export default function IngredientForm() {
                 name="unit"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t('unit')}</FormLabel>
+                    <FormLabel>Unit</FormLabel>
                     <FormControl>
-                      <Input placeholder={t('unitPlaceholder')} {...field} />
+                      <Input placeholder="gr, ml, pcs" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -118,7 +116,7 @@ export default function IngredientForm() {
               name="price"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('totalPrice')}</FormLabel>
+                  <FormLabel>Total Price (for the quantity above)</FormLabel>
                   <FormControl>
                     <Input type="number" placeholder="0.00" {...field} value={field.value ?? ""} />
                   </FormControl>
@@ -130,7 +128,7 @@ export default function IngredientForm() {
           <CardFooter>
             <Button type="submit" disabled={form.formState.isSubmitting}>
                {form.formState.isSubmitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-              {t('addIngredientButton')}
+              Add Ingredient
             </Button>
           </CardFooter>
         </form>

@@ -2,9 +2,8 @@
 "use client";
 
 import type { ReactNode } from 'react';
-import { usePathname, useParams } from 'next/navigation';
 import { SidebarProvider, Sidebar, SidebarTrigger, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter, SidebarOverlay } from '@/components/ui/sidebar';
-import { Coffee, LayoutDashboard, ArrowLeftRight, Calculator, BookUser, Globe } from 'lucide-react';
+import { Coffee, LayoutDashboard, ArrowLeftRight, Calculator, BookUser } from 'lucide-react';
 import BottomNav from '@/components/layout/bottom-nav';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -12,27 +11,22 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuIte
 import { useSidebar } from '@/components/ui/sidebar';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
-import { useTranslations } from 'next-intl';
-import { Link } from '@/navigation';
+import Link from 'next/link';
 
 
 function HeaderTitle() {
   const { isCollapsed } = useSidebar();
   const isMobile = useIsMobile();
-  const t = useTranslations('Header');
 
   return (
      <div className={cn("flex items-center gap-2", (isCollapsed || isMobile) && "justify-center")}>
         <Coffee className="h-8 w-8 text-sidebar-foreground" />
-        {(!isCollapsed && !isMobile) && <h1 className="text-xl font-bold text-sidebar-foreground font-headline flex-1">{t('title')}</h1>}
+        {(!isCollapsed && !isMobile) && <h1 className="text-xl font-bold text-sidebar-foreground font-headline flex-1">Me Coffee</h1>}
     </div>
   )
 }
 
 export default function MainLayoutContent({ children }: { children: ReactNode }) {
-  const t = useTranslations();
-  const pathname = usePathname();
-
 
   return (
     <SidebarProvider>
@@ -44,34 +38,34 @@ export default function MainLayoutContent({ children }: { children: ReactNode })
           <SidebarContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip={t('Sidebar.dashboard')}>
+                <SidebarMenuButton asChild tooltip="Dashboard">
                   <Link href="/dashboard">
                     <LayoutDashboard />
-                    <span className="flex-1">{t('Sidebar.dashboard')}</span>
+                    <span className="flex-1">Dashboard</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip={t('Sidebar.transactions')}>
+                <SidebarMenuButton asChild tooltip="Transactions">
                   <Link href="/transactions">
                     <ArrowLeftRight />
-                    <span className="flex-1">{t('Sidebar.transactions')}</span>
+                    <span className="flex-1">Transactions</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip={t('Sidebar.hpp')}>
+                <SidebarMenuButton asChild tooltip="HPP">
                   <Link href="/hpp">
                     <Calculator />
-                    <span className="flex-1">{t('Sidebar.hpp')}</span>
+                    <span className="flex-1">HPP</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip={t('Sidebar.userGuide')}>
+                <SidebarMenuButton asChild tooltip="User Guide">
                   <Link href="/user-guide">
                     <BookUser />
-                    <span className="flex-1">{t('Sidebar.userGuide')}</span>
+                    <span className="flex-1">User Guide</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -84,29 +78,6 @@ export default function MainLayoutContent({ children }: { children: ReactNode })
           <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b bg-background px-4 sm:px-6">
             <SidebarTrigger />
             <div className="flex-1" />
-             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <Globe className="h-[1.2rem] w-[1.2rem]" />
-                  <span className="sr-only">Change Language</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>{t('Header.language')}</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <Link href={pathname as any} locale="id" >
-                  <DropdownMenuItem>
-                    Indonesia
-                  </DropdownMenuItem>
-                </Link>
-                <Link href={pathname as any} locale="en" >
-                  <DropdownMenuItem>
-                    English
-                  </DropdownMenuItem>
-                </Link>
-              </DropdownMenuContent>
-            </DropdownMenu>
-
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="rounded-full">
@@ -117,12 +88,12 @@ export default function MainLayoutContent({ children }: { children: ReactNode })
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuLabel>{t('Header.myAccount')}</DropdownMenuLabel>
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>{t('Header.settings')}</DropdownMenuItem>
-                <DropdownMenuItem>{t('Header.support')}</DropdownMenuItem>
+                <DropdownMenuItem>Settings</DropdownMenuItem>
+                <DropdownMenuItem>Support</DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>{t('Header.logout')}</DropdownMenuItem>
+                <DropdownMenuItem>Logout</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </header>

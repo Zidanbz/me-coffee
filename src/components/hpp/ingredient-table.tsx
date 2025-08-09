@@ -28,7 +28,6 @@ import type { Ingredient } from "@/types"
 import { useToast } from '@/hooks/use-toast';
 import { deleteIngredient } from '@/lib/firestore';
 import EditIngredientForm from './edit-ingredient-form';
-import { useTranslations } from 'next-intl';
 
 export default function IngredientTable({ ingredients }: { ingredients: Ingredient[] }) {
   const router = useRouter();
@@ -36,7 +35,6 @@ export default function IngredientTable({ ingredients }: { ingredients: Ingredie
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedIngredient, setSelectedIngredient] = useState<Ingredient | null>(null);
-  const t = useTranslations('HPP');
 
   const handleEditClick = (ingredient: Ingredient) => {
     setSelectedIngredient(ingredient);
@@ -53,14 +51,14 @@ export default function IngredientTable({ ingredients }: { ingredients: Ingredie
     try {
       await deleteIngredient(selectedIngredient.id);
       toast({
-        title: "Bahan Dihapus",
-        description: `${selectedIngredient.name} telah dihapus dari stok Anda.`,
+        title: "Ingredient Deleted",
+        description: `${selectedIngredient.name} has been deleted from your stock.`,
       });
       router.refresh();
     } catch (error) {
       toast({
         title: "Error",
-        description: "Gagal menghapus bahan.",
+        description: "Failed to delete ingredient.",
         variant: "destructive",
       });
     } finally {
@@ -74,24 +72,24 @@ export default function IngredientTable({ ingredients }: { ingredients: Ingredie
     <>
       <Card>
         <CardHeader>
-          <CardTitle className="font-headline">{t('ingredientStock')}</CardTitle>
-          <CardDescription>{t('ingredientStockDesc')}</CardDescription>
+          <CardTitle className="font-headline">Ingredient Stock</CardTitle>
+          <CardDescription>List of all raw materials you have entered.</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>{t('stockTableName')}</TableHead>
-                <TableHead>{t('stockTableQuantity')}</TableHead>
-                <TableHead>{t('stockTablePricePerUnit')}</TableHead>
-                <TableHead className="text-right">{t('stockTableActions')}</TableHead>
+                <TableHead>Ingredient Name</TableHead>
+                <TableHead>Quantity</TableHead>
+                <TableHead>Price/Unit</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {ingredients.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={4} className="h-24 text-center">
-                    {t('noIngredients')}
+                    No ingredients yet.
                   </TableCell>
                 </TableRow>
               ) : (
@@ -129,14 +127,14 @@ export default function IngredientTable({ ingredients }: { ingredients: Ingredie
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{t('deleteConfirmTitle')}</AlertDialogTitle>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              {t('deleteConfirmDesc')}
+              This action cannot be undone. This will permanently delete the ingredient.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{t('cancelButton')}</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeleteConfirm}>{t('deleteButton')}</AlertDialogAction>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteConfirm}>Delete</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
