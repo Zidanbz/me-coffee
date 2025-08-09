@@ -2,7 +2,7 @@
 "use client";
 
 import type { ReactNode } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { SidebarProvider, Sidebar, SidebarTrigger, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter, SidebarOverlay } from '@/components/ui/sidebar';
 import { Coffee, LayoutDashboard, ArrowLeftRight, Calculator, BookUser, Globe } from 'lucide-react';
@@ -13,7 +13,7 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuIte
 import { useSidebar } from '@/components/ui/sidebar';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
-import { useTranslations } from 'next-intl';
+import { useTranslations, NextIntlClientProvider, useMessages } from 'next-intl';
 
 
 function HeaderTitle() {
@@ -30,9 +30,12 @@ function HeaderTitle() {
 }
 
 
-export default function MainLayout({ children, params: { locale } }: { children: ReactNode, params: { locale: string } }) {
+function MainLayoutContent({ children }: { children: ReactNode }) {
   const t = useTranslations();
   const pathname = usePathname();
+  const params = useParams();
+  const locale = Array.isArray(params.locale) ? params.locale[0] : params.locale;
+
 
   const getLocalizedPath = (path: string) => {
     const pathWithoutLocale = pathname.startsWith(`/${locale}`) ? pathname.substring(`/${locale}`.length) : pathname;
@@ -141,3 +144,16 @@ export default function MainLayout({ children, params: { locale } }: { children:
     </SidebarProvider>
   );
 }
+
+
+export default function MainLayout({ children }: { children: ReactNode }) {
+  const messages = useMessages();
+  const { locale } = useParams() as { locale: string };
+
+  return (
+    <NextIntlClientProvider locale={locale} messages={messages}>
+      <MainLayoutContent>{children}</MainLayoutContent>
+    </NextIntlClientProvider>
+  );
+}
+
