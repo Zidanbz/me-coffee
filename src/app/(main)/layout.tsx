@@ -13,7 +13,8 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuIte
 import { useSidebar } from '@/components/ui/sidebar';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
-import { useTranslations, NextIntlClientProvider, useMessages } from 'next-intl';
+import { useTranslations, NextIntlClientProvider } from 'next-intl';
+import { getMessages, getTranslations } from 'next-intl/server';
 
 
 function HeaderTitle() {
@@ -38,8 +39,10 @@ function MainLayoutContent({ children }: { children: ReactNode }) {
 
 
   const getLocalizedPath = (path: string) => {
-    const pathWithoutLocale = pathname.startsWith(`/${locale}`) ? pathname.substring(`/${locale}`.length) : pathname;
-    return `/${path}${pathWithoutLocale}`;
+    const pathWithoutLocale = pathname.startsWith(`/${locale}`) ? pathname.substring(`/${locale}`.length) || '/' : pathname;
+    const newPath = `/${path}${pathWithoutLocale}`;
+    // Ensure we don't have double slashes
+    return newPath.replace(/\/+/g, '/');
   }
 
 
@@ -146,9 +149,8 @@ function MainLayoutContent({ children }: { children: ReactNode }) {
 }
 
 
-export default function MainLayout({ children }: { children: ReactNode }) {
-  const messages = useMessages();
-  const { locale } = useParams() as { locale: string };
+export default async function MainLayout({ children, params: { locale } }: { children: ReactNode, params: { locale: string } }) {
+  const messages = await getMessages();
 
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
@@ -156,4 +158,3 @@ export default function MainLayout({ children }: { children: ReactNode }) {
     </NextIntlClientProvider>
   );
 }
-
