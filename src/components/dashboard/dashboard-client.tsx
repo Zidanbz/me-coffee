@@ -86,19 +86,19 @@ export default function DashboardClient({ transactions, inventory }: DashboardCl
     const newStats = [
       {
         title: "Today's Revenue",
-        value: `Rp ${todaysRevenue.toFixed(2)}`,
+        value: `Rp ${todaysRevenue.toLocaleString('id-ID')}`,
         description: `${revenueChange >= 0 ? '+' : ''}${revenueChange.toFixed(1)}% from yesterday`,
         icon: <DollarSign className="w-4 h-4 text-muted-foreground" />,
       },
       {
         title: "Today's Expenses",
-        value: `Rp ${todaysExpenses.toFixed(2)}`,
+        value: `Rp ${todaysExpenses.toLocaleString('id-ID')}`,
         description: `${expenseChange >= 0 ? '+' : ''}${expenseChange.toFixed(1)}% from yesterday`,
         icon: <TrendingDown className="w-4 h-4 text-muted-foreground" />,
       },
       {
         title: "Profit",
-        value: `Rp ${profit.toFixed(2)}`,
+        value: `Rp ${profit.toLocaleString('id-ID')}`,
         description: `${profitChange >= 0 ? '+' : ''}${profitChange.toFixed(1)}% from yesterday`,
         icon: <TrendingUp className="w-4 h-4 text-muted-foreground" />,
       },
