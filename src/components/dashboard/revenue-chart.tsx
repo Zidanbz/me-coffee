@@ -1,35 +1,12 @@
+
 "use client"
 
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ChartTooltipContent, ChartContainer } from "@/components/ui/chart";
-
-const dailyData = [
-  { date: "Mon", income: 250 },
-  { date: "Tue", income: 320 },
-  { date: "Wed", income: 280 },
-  { date: "Thu", income: 450 },
-  { date: "Fri", income: 500 },
-  { date: "Sat", income: 680 },
-  { date: "Sun", income: 620 },
-]
-
-const weeklyData = [
-  { week: "Week 1", income: 1800 },
-  { week: "Week 2", income: 2200 },
-  { week: "Week 3", income: 1900 },
-  { week: "Week 4", income: 2500 },
-]
-
-const monthlyData = [
-  { month: "Jan", income: 8000 },
-  { month: "Feb", income: 9500 },
-  { month: "Mar", income: 11000 },
-  { month: "Apr", income: 10500 },
-  { month: "May", income: 12000 },
-  { month: "Jun", income: 11800 },
-]
+import type { Transaction } from "@/types";
+import { subDays, format } from 'date-fns';
 
 const chartConfig = {
   income: {
@@ -53,7 +30,38 @@ function CustomBarChart({ data, dataKey, xDataKey }: { data: any[], dataKey: str
   )
 }
 
-export default function RevenueChart() {
+export default function RevenueChart({ transactions }: { transactions: Transaction[] }) {
+  const now = new Date();
+
+  // Daily
+  const dailyData = Array.from({ length: 7 }, (_, i) => {
+    const date = subDays(now, 6 - i);
+    const dayIncome = transactions
+      .filter(t => t.type === 'income' && format(t.date, 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd'))
+      .reduce((sum, t) => sum + t.amount, 0);
+    return { date: format(date, 'EEE'), income: dayIncome };
+  });
+
+  // Weekly
+  const weeklyData = Array.from({ length: 4 }, (_, i) => {
+    const weekStart = subDays(now, (3 - i) * 7);
+    const weekEnd = subDays(now, (2 - i) * 7);
+    const weekIncome = transactions
+      .filter(t => t.type === 'income' && t.date >= weekStart && t.date < weekEnd)
+      .reduce((sum, t) => sum + t.amount, 0);
+    return { week: `Week ${i + 1}`, income: weekIncome };
+  });
+
+  // Monthly
+  const monthlyData = Array.from({ length: 6 }, (_, i) => {
+    const month = (now.getMonth() - (5 - i) + 12) % 12;
+    const year = now.getFullYear() - (now.getMonth() < 5 - i ? 1 : 0);
+    const monthIncome = transactions
+      .filter(t => t.type === 'income' && t.date.getMonth() === month && t.date.getFullYear() === year)
+      .reduce((sum, t) => sum + t.amount, 0);
+    return { month: format(new Date(year, month), 'MMM'), income: monthIncome };
+  });
+
   return (
     <Card>
       <CardHeader>

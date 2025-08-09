@@ -1,3 +1,6 @@
+
+"use client";
+
 import {
   Table,
   TableBody,
@@ -10,16 +13,28 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Badge } from "@/components/ui/badge"
 import type { Transaction } from "@/types"
 import { format } from "date-fns"
-
-const mockTransactions: Transaction[] = [
-  { id: "1", type: "income", date: new Date(), category: "Espresso", amount: 3.50, description: "Sale of one espresso", paymentMethod: "Card" },
-  { id: "2", type: "income", date: new Date(new Date().setDate(new Date().getDate() - 1)), category: "Latte", amount: 5.00, description: "Sale of one latte", paymentMethod: "Cash" },
-  { id: "3", type: "expense", date: new Date(new Date().setDate(new Date().getDate() - 1)), category: "Supplies", amount: 55.20, description: "Milk and sugar delivery", paymentMethod: "Card" },
-  { id: "4", type: "income", date: new Date(new Date().setDate(new Date().getDate() - 2)), category: "Muffin", amount: 2.75, description: "Pastry sale", paymentMethod: "Online" },
-  { id: "5", type: "expense", date: new Date(new Date().setDate(new Date().getDate() - 3)), category: "Rent", amount: 500.00, description: "Monthly rent", paymentMethod: "Online" },
-]
+import { useEffect, useState } from "react";
+import { getTransactions } from "@/lib/firestore";
+import { Skeleton } from "../ui/skeleton";
 
 export default function TransactionsTable() {
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchTransactions() {
+      try {
+        const items = await getTransactions();
+        setTransactions(items);
+      } catch (error) {
+        console.error("Failed to fetch transactions:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchTransactions();
+  }, []);
+
   return (
     <Card>
       <CardHeader>
@@ -38,21 +53,33 @@ export default function TransactionsTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {mockTransactions.map((transaction) => (
-              <TableRow key={transaction.id}>
-                <TableCell>
-                  <Badge variant={transaction.type === 'income' ? 'secondary' : 'destructive'}>
-                    {transaction.type}
-                  </Badge>
-                </TableCell>
-                <TableCell className="font-medium">{transaction.category}</TableCell>
-                <TableCell className={transaction.type === 'income' ? 'text-green-600' : 'text-red-600'}>
-                  ${transaction.amount.toFixed(2)}
-                </TableCell>
-                <TableCell>{format(transaction.date, "MMM d, yyyy")}</TableCell>
-                <TableCell className="hidden md:table-cell">{transaction.description}</TableCell>
-              </TableRow>
-            ))}
+             {loading ? (
+              Array.from({ length: 5 }).map((_, i) => (
+                <TableRow key={i}>
+                  <TableCell><Skeleton className="h-6 w-20 rounded-full" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-16" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                  <TableCell className="hidden md:table-cell"><Skeleton className="h-4 w-48" /></TableCell>
+                </TableRow>
+              ))
+            ) : (
+              transactions.map((transaction) => (
+                <TableRow key={transaction.id}>
+                  <TableCell>
+                    <Badge variant={transaction.type === 'income' ? 'secondary' : 'destructive'}>
+                      {transaction.type}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="font-medium">{transaction.category}</TableCell>
+                  <TableCell className={transaction.type === 'income' ? 'text-green-600' : 'text-red-600'}>
+                    ${transaction.amount.toFixed(2)}
+                  </TableCell>
+                  <TableCell>{format(transaction.date, "MMM d, yyyy")}</TableCell>
+                  <TableCell className="hidden md:table-cell">{transaction.description}</TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </CardContent>

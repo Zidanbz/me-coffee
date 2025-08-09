@@ -1,3 +1,4 @@
+
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -9,7 +10,6 @@ import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -24,6 +24,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { cn } from "@/lib/utils"
 import { Calendar as CalendarIcon, Loader2 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import { addTransaction } from "@/lib/firestore"
 
 const transactionFormSchema = z.object({
   type: z.enum(["income", "expense"], {
@@ -57,15 +58,22 @@ export default function TransactionForm() {
     },
   });
 
-  const onSubmit = (data: TransactionFormValues) => {
-    console.log(data);
-    toast({
-      title: "Transaction Submitted!",
-      description: "Your transaction has been recorded successfully.",
-    });
-    // Here you would typically send data to Firestore
-    form.reset();
-    form.setValue("date", undefined);
+  const onSubmit = async (data: TransactionFormValues) => {
+    try {
+      await addTransaction(data);
+      toast({
+        title: "Transaction Submitted!",
+        description: "Your transaction has been recorded successfully.",
+      });
+      form.reset();
+      form.setValue("date", undefined);
+    } catch (error) {
+       toast({
+        title: "Error",
+        description: "Failed to add transaction.",
+        variant: "destructive"
+      });
+    }
   }
 
   return (

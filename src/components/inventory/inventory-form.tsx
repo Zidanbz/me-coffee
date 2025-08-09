@@ -1,3 +1,4 @@
+
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -17,6 +18,7 @@ import { Input } from "@/components/ui/input"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
 import { useToast } from "@/hooks/use-toast"
 import { Loader2 } from "lucide-react"
+import { addInventoryItem } from "@/lib/firestore"
 
 const inventoryFormSchema = z.object({
   name: z.string().min(2, "Item name must be at least 2 characters."),
@@ -39,14 +41,21 @@ export default function InventoryForm() {
     },
   })
 
-  const onSubmit = (data: InventoryFormValues) => {
-    console.log(data);
-    toast({
-      title: "Inventory Updated!",
-      description: `${data.name} has been added to your inventory.`,
-    });
-    // Here you would typically send data to Firestore
-    form.reset()
+  const onSubmit = async (data: InventoryFormValues) => {
+    try {
+      await addInventoryItem(data);
+      toast({
+        title: "Inventory Updated!",
+        description: `${data.name} has been added to your inventory.`,
+      });
+      form.reset()
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to add inventory item.",
+        variant: "destructive"
+      });
+    }
   }
 
   return (
