@@ -6,12 +6,12 @@ import { getFirestore } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "your-api-key",
-  authDomain: "your-auth-domain",
-  projectId: "your-project-id",
-  storageBucket: "your-storage-bucket",
-  messagingSenderId: "your-messaging-sender-id",
-  appId: "your-app-id"
+  "projectId": "me-coffee-dashboard",
+  "appId": "1:472782942973:web:ff65ed5e01e898b66cc494",
+  "storageBucket": "me-coffee-dashboard.firebasestorage.app",
+  "apiKey": "AIzaSyARGezClQ10MvuzPZBVH6AIWdP-pCw6qK4",
+  "authDomain": "me-coffee-dashboard.firebaseapp.com",
+  "messagingSenderId": "472782942973"
 };
 
 // Initialize Firebase
