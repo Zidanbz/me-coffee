@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
-import { ChevronLeft, ChevronsLeft, ChevronsRight, Menu, X } from "lucide-react"
+import { ChevronLeft, ChevronsLeft, ChevronsRight, Menu, X, PanelLeftClose, PanelLeftOpen } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button, type ButtonProps } from "@/components/ui/button"
@@ -71,6 +71,19 @@ export function Sidebar({ className, ...props }: SidebarProps) {
   )
 }
 
+export function SidebarOverlay() {
+    const { isOpen, setIsOpen } = useSidebar();
+    return (
+        <div
+            className={cn(
+                "fixed inset-0 z-40 bg-black/50 transition-opacity duration-300 ease-in-out md:hidden",
+                isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+            )}
+            onClick={() => setIsOpen(false)}
+        />
+    )
+}
+
 export function SidebarTrigger({ className, ...props }: ButtonProps) {
     const { isOpen, setIsOpen } = useSidebar()
   
@@ -102,7 +115,7 @@ export function SidebarFooter({ className, ...props }: React.HTMLAttributes<HTML
   return (
     <div className={cn("flex h-14 items-center justify-end border-t border-sidebar-border px-4", className)} {...props}>
          <Button variant="ghost" size="icon" className="hidden md:inline-flex" onClick={() => setIsCollapsed(!isCollapsed)}>
-            {isCollapsed ? <ChevronsRight /> : <ChevronsLeft />}
+            {isCollapsed ? <PanelLeftOpen /> : <PanelLeftClose />}
             <span className="sr-only">{isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}</span>
         </Button>
     </div>

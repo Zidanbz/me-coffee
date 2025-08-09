@@ -51,7 +51,7 @@ export default function TransactionsTable({ transactions }: { transactions: Tran
                   <TableCell className={transaction.type === 'income' ? 'text-green-600' : 'text-red-600'}>
                     ${transaction.amount.toFixed(2)}
                   </TableCell>
-                  <TableCell>{format(transaction.date, "MMM d, yyyy")}</TableCell>
+                  <TableCell>{transaction.date ? format(new Date(transaction.date), "MMM d, yyyy") : 'No date'}</TableCell>
                   <TableCell className="hidden md:table-cell">{transaction.description}</TableCell>
                 </TableRow>
               ))

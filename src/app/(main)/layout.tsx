@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
-import { SidebarProvider, Sidebar, SidebarTrigger, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from '@/components/ui/sidebar';
+import { SidebarProvider, Sidebar, SidebarTrigger, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter, SidebarOverlay } from '@/components/ui/sidebar';
 import { Coffee, LayoutDashboard, ArrowLeftRight, Calculator, BookUser } from 'lucide-react';
 import BottomNav from '@/components/layout/bottom-nav';
 import { Button } from '@/components/ui/button';
@@ -56,6 +56,7 @@ export default function MainLayout({ children }: { children: ReactNode }) {
           </SidebarContent>
           <SidebarFooter />
         </Sidebar>
+        <SidebarOverlay />
         <div className="flex flex-col flex-1">
           <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b bg-background px-4 sm:px-6">
             <SidebarTrigger />
@@ -79,7 +80,7 @@ export default function MainLayout({ children }: { children: ReactNode }) {
               </DropdownMenuContent>
             </DropdownMenu>
           </header>
-          <main className="flex-1 p-4 overflow-auto md:p-6">
+          <main className="flex-1 p-4 overflow-auto md:p-6 pb-20 md:pb-6">
             {children}
           </main>
           <BottomNav />

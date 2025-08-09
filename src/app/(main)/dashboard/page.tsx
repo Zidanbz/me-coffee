@@ -1,9 +1,8 @@
 
 import StatCard from '@/components/dashboard/stat-card';
-import RevenueChart from '@/components/dashboard/revenue-chart';
 import { TrendingUp, TrendingDown, Package, DollarSign } from 'lucide-react';
 import { getTransactions, getIngredients } from '@/lib/firestore';
-import type { Transaction, Ingredient } from '@/types';
+import DashboardClient from '@/components/dashboard/dashboard-client';
 
 export default async function DashboardPage() {
   const [transactions, inventory] = await Promise.all([
@@ -48,38 +47,32 @@ export default async function DashboardPage() {
   const yesterdayProfit = yesterdaysRevenue - yesterdaysExpenses;
   const profitChange = yesterdayProfit === 0 ? 100 : ((profit - yesterdayProfit) / yesterdayProfit) * 100;
 
-  return (
-    <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-bold md:text-3xl font-headline">Dashboard</h1>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <StatCard
-          title="Today's Revenue"
-          value={`$${todaysRevenue.toFixed(2)}`}
-          description={`${revenueChange >= 0 ? '+' : ''}${revenueChange.toFixed(1)}% from yesterday`}
-          icon={<DollarSign className="w-4 h-4 text-muted-foreground" />}
-        />
-        <StatCard
-          title="Today's Expenses"
-          value={`$${todaysExpenses.toFixed(2)}`}
-          description={`${expenseChange >= 0 ? '+' : ''}${expenseChange.toFixed(1)}% from yesterday`}
-          icon={<TrendingDown className="w-4 h-4 text-muted-foreground" />}
-        />
-        <StatCard
-          title="Profit"
-          value={`$${profit.toFixed(2)}`}
-          description={`${profitChange >= 0 ? '+' : ''}${profitChange.toFixed(1)}% from yesterday`}
-          icon={<TrendingUp className="w-4 h-4 text-muted-foreground" />}
-        />
-        <StatCard
-          title="Items in Stock"
-          value={inventory.length.toString()}
-          description={`${inventory.length} ingredients available`}
-          icon={<Package className="w-4 h-4 text-muted-foreground" />}
-        />
-      </div>
-      <div className="grid grid-cols-1 gap-6">
-        <RevenueChart transactions={transactions} />
-      </div>
-    </div>
-  );
+  const stats = [
+    {
+      title: "Today's Revenue",
+      value: `$${todaysRevenue.toFixed(2)}`,
+      description: `${revenueChange >= 0 ? '+' : ''}${revenueChange.toFixed(1)}% from yesterday`,
+      icon: <DollarSign className="w-4 h-4 text-muted-foreground" />,
+    },
+    {
+      title: "Today's Expenses",
+      value: `$${todaysExpenses.toFixed(2)}`,
+      description: `${expenseChange >= 0 ? '+' : ''}${expenseChange.toFixed(1)}% from yesterday`,
+      icon: <TrendingDown className="w-4 h-4 text-muted-foreground" />,
+    },
+    {
+      title: "Profit",
+      value: `$${profit.toFixed(2)}`,
+      description: `${profitChange >= 0 ? '+' : ''}${profitChange.toFixed(1)}% from yesterday`,
+      icon: <TrendingUp className="w-4 h-4 text-muted-foreground" />,
+    },
+    {
+      title: "Items in Stock",
+      value: inventory.length.toString(),
+      description: `${inventory.length} ingredients available`,
+      icon: <Package className="w-4 h-4 text-muted-foreground" />,
+    },
+  ];
+
+  return <DashboardClient stats={stats} transactions={transactions} />;
 }
