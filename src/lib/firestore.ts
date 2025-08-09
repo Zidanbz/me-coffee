@@ -9,10 +9,10 @@ import {
   updateDoc,
 } from 'firebase/firestore';
 import {db} from './firebase';
-import type {Ingredient, Transaction} from '@/types';
+import type {Ingredient, Transaction, ClientTransaction} from '@/types';
 
 // Ingredient functions
-export async function getIngredients() {
+export async function getIngredients(): Promise<Ingredient[]> {
   const querySnapshot = await getDocs(collection(db, 'ingredients'));
   const items: Ingredient[] = [];
   querySnapshot.forEach((doc) => {
@@ -27,18 +27,19 @@ export async function addIngredient(item: Omit<Ingredient, 'id'>) {
 }
 
 // Transaction functions
-export async function getTransactions() {
+export async function getTransactions(): Promise<ClientTransaction[]> {
   const querySnapshot = await getDocs(collection(db, 'transactions'));
-  const transactions: Transaction[] = [];
+  const transactions: ClientTransaction[] = [];
   querySnapshot.forEach((doc) => {
     const data = doc.data();
     transactions.push({ 
       id: doc.id, 
       ...data,
-      date: data.date.toDate() 
-    } as Transaction);
+      date: data.date.toDate().toISOString() 
+    } as ClientTransaction);
   });
-  return transactions;
+  // sort by date descending
+  return transactions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
 
 export async function addTransaction(transaction: Omit<Transaction, 'id'>) {

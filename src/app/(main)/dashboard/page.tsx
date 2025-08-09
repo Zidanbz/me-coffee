@@ -21,8 +21,8 @@ export default async function DashboardPage() {
            d1.getDate() === d2.getDate();
   }
 
-  const todayTransactions = transactions.filter(t => isSameDay(t.date, today));
-  const yesterdayTransactions = transactions.filter(t => isSameDay(t.date, yesterday));
+  const todayTransactions = transactions.filter(t => isSameDay(new Date(t.date), today));
+  const yesterdayTransactions = transactions.filter(t => isSameDay(new Date(t.date), yesterday));
 
   const todaysRevenue = todayTransactions
     .filter(t => t.type === 'income')
@@ -74,8 +74,6 @@ export default async function DashboardPage() {
       icon: <Package className="w-4 h-4 text-muted-foreground" />,
     },
   ];
-
-  const clientTransactions = transactions.map(t => ({...t, date: t.date.toISOString()}));
-
-  return <DashboardClient stats={stats} transactions={clientTransactions} />;
+  
+  return <DashboardClient stats={stats} transactions={transactions} />;
 }

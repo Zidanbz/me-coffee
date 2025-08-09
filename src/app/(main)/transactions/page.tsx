@@ -1,12 +1,10 @@
 import TransactionForm from "@/components/transactions/transaction-form";
 import TransactionsTable from "@/components/transactions/transactions-table";
 import { getTransactions } from "@/lib/firestore";
-import type { Transaction } from "@/types";
+import type { ClientTransaction } from "@/types";
 
 export default async function TransactionsPage() {
-  const transactions: Transaction[] = await getTransactions();
-  
-  const clientTransactions = transactions.map(t => ({...t, date: t.date.toISOString()}));
+  const transactions: ClientTransaction[] = await getTransactions();
 
   return (
     <div className="flex flex-col gap-6">
@@ -16,7 +14,7 @@ export default async function TransactionsPage() {
           <TransactionForm />
         </div>
         <div className="lg:col-span-3">
-          <TransactionsTable transactions={clientTransactions} />
+          <TransactionsTable transactions={transactions} />
         </div>
       </div>
     </div>
