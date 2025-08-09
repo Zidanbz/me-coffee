@@ -4,6 +4,8 @@ import HppCalculator from "@/components/hpp/hpp-calculator";
 import { getIngredients } from "@/lib/firestore";
 import type { Ingredient } from "@/types";
 
+export const revalidate = 0;
+
 export default async function HppPage() {
   const ingredients: Ingredient[] = await getIngredients();
 

@@ -3,6 +3,8 @@ import TransactionsTable from "@/components/transactions/transactions-table";
 import { getTransactions } from "@/lib/firestore";
 import type { ClientTransaction } from "@/types";
 
+export const revalidate = 0;
+
 export default async function TransactionsPage() {
   const transactions: ClientTransaction[] = await getTransactions();
 
