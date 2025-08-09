@@ -2,13 +2,13 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, ArrowLeftRight, Warehouse } from 'lucide-react';
+import { LayoutDashboard, ArrowLeftRight, Calculator } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navItems = [
   { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { href: '/transactions', icon: ArrowLeftRight, label: 'Transactions' },
-  { href: '/inventory', icon: Warehouse, label: 'Inventory' },
+  { href: '/hpp', icon: Calculator, label: 'HPP' },
 ];
 
 export default function BottomNav() {

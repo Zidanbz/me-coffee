@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from '@/components/ui/sidebar';
-import { Coffee, LayoutDashboard, ArrowLeftRight, Warehouse } from 'lucide-react';
+import { Coffee, LayoutDashboard, ArrowLeftRight, Calculator } from 'lucide-react';
 import BottomNav from '@/components/layout/bottom-nav';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -36,10 +36,10 @@ export default function MainLayout({ children }: { children: ReactNode }) {
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild tooltip="Inventory">
-                <Link href="/inventory">
-                  <Warehouse />
-                  <span>Inventory</span>
+              <SidebarMenuButton asChild tooltip="HPP">
+                <Link href="/hpp">
+                  <Calculator />
+                  <span>HPP</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

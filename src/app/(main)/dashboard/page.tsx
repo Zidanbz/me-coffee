@@ -5,13 +5,13 @@ import StatCard from '@/components/dashboard/stat-card';
 import RevenueChart from '@/components/dashboard/revenue-chart';
 import { TrendingUp, TrendingDown, Package, DollarSign } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { getTransactions, getInventoryItems } from '@/lib/firestore';
-import type { Transaction, InventoryItem } from '@/types';
+import { getTransactions, getIngredients } from '@/lib/firestore';
+import type { Transaction, Ingredient } from '@/types';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function DashboardPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [inventory, setInventory] = useState<InventoryItem[]>([]);
+  const [inventory, setInventory] = useState<Ingredient[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -19,7 +19,7 @@ export default function DashboardPage() {
       try {
         const [transactionsData, inventoryData] = await Promise.all([
           getTransactions(),
-          getInventoryItems()
+          getIngredients()
         ]);
         setTransactions(transactionsData);
         setInventory(inventoryData);

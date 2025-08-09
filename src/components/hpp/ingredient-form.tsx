@@ -18,22 +18,22 @@ import { Input } from "@/components/ui/input"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
 import { useToast } from "@/hooks/use-toast"
 import { Loader2 } from "lucide-react"
-import { addInventoryItem } from "@/lib/firestore"
+import { addIngredient } from "@/lib/firestore"
 
-const inventoryFormSchema = z.object({
-  name: z.string().min(2, "Item name must be at least 2 characters."),
-  quantity: z.coerce.number().positive("Quantity must be a positive number."),
-  unit: z.string().min(1, "Unit is required (e.g., kg, L, pcs)."),
-  price: z.coerce.number().positive("Price must be a positive number."),
-  minStock: z.coerce.number().int().nonnegative("Minimum stock must be a non-negative integer."),
+const ingredientFormSchema = z.object({
+  name: z.string().min(2, "Nama bahan harus minimal 2 karakter."),
+  quantity: z.coerce.number().positive("Kuantitas harus angka positif."),
+  unit: z.string().min(1, "Satuan diperlukan (e.g., kg, L, pcs)."),
+  price: z.coerce.number().positive("Harga harus angka positif."),
+  minStock: z.coerce.number().int().nonnegative("Stok minimum harus angka non-negatif."),
 })
 
-type InventoryFormValues = z.infer<typeof inventoryFormSchema>
+type IngredientFormValues = z.infer<typeof ingredientFormSchema>
 
-export default function InventoryForm() {
+export default function IngredientForm() {
   const { toast } = useToast()
-  const form = useForm<InventoryFormValues>({
-    resolver: zodResolver(inventoryFormSchema),
+  const form = useForm<IngredientFormValues>({
+    resolver: zodResolver(ingredientFormSchema),
     defaultValues: {
       name: "",
       unit: "pcs",
@@ -41,18 +41,18 @@ export default function InventoryForm() {
     },
   })
 
-  const onSubmit = async (data: InventoryFormValues) => {
+  const onSubmit = async (data: IngredientFormValues) => {
     try {
-      await addInventoryItem(data);
+      await addIngredient(data);
       toast({
-        title: "Inventory Updated!",
-        description: `${data.name} has been added to your inventory.`,
+        title: "Bahan Ditambahkan!",
+        description: `${data.name} telah ditambahkan ke stok Anda.`,
       });
       form.reset()
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to add inventory item.",
+        description: "Gagal menambahkan bahan.",
         variant: "destructive"
       });
     }
@@ -61,8 +61,8 @@ export default function InventoryForm() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="font-headline">Add Inventory Item</CardTitle>
-        <CardDescription>Add a new ingredient or supply to your stock.</CardDescription>
+        <CardTitle className="font-headline">Tambah Bahan Baku</CardTitle>
+        <CardDescription>Tambahkan bahan baku atau supply baru ke stok Anda.</CardDescription>
       </CardHeader>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -72,9 +72,9 @@ export default function InventoryForm() {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Item Name</FormLabel>
+                  <FormLabel>Nama Bahan</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., Coffee Beans, Milk" {...field} />
+                    <Input placeholder="e.g., Biji Kopi, Susu" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -86,7 +86,7 @@ export default function InventoryForm() {
                 name="quantity"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Quantity</FormLabel>
+                    <FormLabel>Kuantitas</FormLabel>
                     <FormControl>
                       <Input type="number" placeholder="0" {...field} />
                     </FormControl>
@@ -99,7 +99,7 @@ export default function InventoryForm() {
                 name="unit"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Unit</FormLabel>
+                    <FormLabel>Satuan</FormLabel>
                     <FormControl>
                       <Input placeholder="kg, L, pcs" {...field} />
                     </FormControl>
@@ -114,7 +114,7 @@ export default function InventoryForm() {
                 name="price"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Price (per unit)</FormLabel>
+                    <FormLabel>Harga (per satuan)</FormLabel>
                     <FormControl>
                       <Input type="number" placeholder="0.00" {...field} />
                     </FormControl>
@@ -127,7 +127,7 @@ export default function InventoryForm() {
                 name="minStock"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Min. Stock Level</FormLabel>
+                    <FormLabel>Stok Minimum</FormLabel>
                     <FormControl>
                       <Input type="number" placeholder="10" {...field} />
                     </FormControl>
@@ -140,7 +140,7 @@ export default function InventoryForm() {
           <CardFooter>
             <Button type="submit" disabled={form.formState.isSubmitting}>
                {form.formState.isSubmitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-              Add Item
+              Tambah Bahan
             </Button>
           </CardFooter>
         </form>

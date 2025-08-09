@@ -8,7 +8,7 @@ export type Transaction = {
   paymentMethod: 'Cash' | 'Card' | 'Online';
 };
 
-export type InventoryItem = {
+export type Ingredient = {
   id: string;
   name: string;
   quantity: number;

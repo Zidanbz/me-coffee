@@ -9,20 +9,20 @@ import {
   updateDoc,
 } from 'firebase/firestore';
 import {db} from './firebase';
-import type {InventoryItem, Transaction} from '@/types';
+import type {Ingredient, Transaction} from '@/types';
 
-// Inventory functions
-export async function getInventoryItems() {
-  const querySnapshot = await getDocs(collection(db, 'inventory'));
-  const items: InventoryItem[] = [];
+// Ingredient functions
+export async function getIngredients() {
+  const querySnapshot = await getDocs(collection(db, 'ingredients'));
+  const items: Ingredient[] = [];
   querySnapshot.forEach((doc) => {
-    items.push({ id: doc.id, ...doc.data() } as InventoryItem);
+    items.push({ id: doc.id, ...doc.data() } as Ingredient);
   });
   return items;
 }
 
-export async function addInventoryItem(item: Omit<InventoryItem, 'id'>) {
-  const docRef = await addDoc(collection(db, 'inventory'), item);
+export async function addIngredient(item: Omit<Ingredient, 'id'>) {
+  const docRef = await addDoc(collection(db, 'ingredients'), item);
   return docRef.id;
 }
 
