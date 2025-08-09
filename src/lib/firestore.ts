@@ -8,7 +8,8 @@ import {
   doc,
   getDocs,
   updateDoc,
-  serverTimestamp
+  serverTimestamp,
+  Timestamp
 } from 'firebase/firestore';
 import {db} from './firebase';
 import type {Ingredient, Transaction, ClientTransaction, UpdateTransaction} from '@/types';
@@ -45,10 +46,12 @@ export async function getTransactions(): Promise<ClientTransaction[]> {
   const transactions: ClientTransaction[] = [];
   querySnapshot.forEach((doc) => {
     const data = doc.data();
+    const createdAtTimestamp = data.createdAt as Timestamp;
     transactions.push({ 
       id: doc.id, 
       ...data,
-      date: data.date.toDate().toISOString() 
+      date: (data.date as Timestamp).toDate().toISOString(),
+      createdAt: createdAtTimestamp ? createdAtTimestamp.toDate().toISOString() : new Date().toISOString()
     } as ClientTransaction);
   });
   // sort by date descending

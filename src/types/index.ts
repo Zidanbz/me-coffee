@@ -12,10 +12,7 @@ export type Transaction = {
 
 export type ClientTransaction = Omit<Transaction, 'date' | 'createdAt'> & {
   date: string;
-  createdAt?: {
-    seconds: number;
-    nanoseconds: number;
-  }
+  createdAt: string;
 };
 
 export type UpdateTransaction = Partial<Omit<Transaction, 'id' | 'createdAt'>>;
