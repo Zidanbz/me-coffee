@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Table,
@@ -29,12 +29,17 @@ import { useToast } from '@/hooks/use-toast';
 import { deleteIngredient } from '@/lib/firestore';
 import EditIngredientForm from './edit-ingredient-form';
 
-export default function IngredientTable({ ingredients }: { ingredients: Ingredient[] }) {
+export default function IngredientTable({ ingredients: initialIngredients }: { ingredients: Ingredient[] }) {
   const router = useRouter();
   const { toast } = useToast();
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedIngredient, setSelectedIngredient] = useState<Ingredient | null>(null);
+  const [ingredients, setIngredients] = useState(initialIngredients);
+
+  useEffect(() => {
+    setIngredients(initialIngredients);
+  }, [initialIngredients]);
 
   const handleEditClick = (ingredient: Ingredient) => {
     setSelectedIngredient(ingredient);
@@ -54,6 +59,8 @@ export default function IngredientTable({ ingredients }: { ingredients: Ingredie
         title: "Ingredient Deleted",
         description: `${selectedIngredient.name} has been deleted from your stock.`,
       });
+      // Optimistically update UI
+      setIngredients(ingredients.filter(i => i.id !== selectedIngredient.id));
       router.refresh();
     } catch (error) {
       toast({
