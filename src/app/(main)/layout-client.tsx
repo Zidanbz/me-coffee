@@ -32,13 +32,7 @@ function HeaderTitle() {
 export default function MainLayoutContent({ children }: { children: ReactNode }) {
   const t = useTranslations();
   const pathname = usePathname();
-  const params = useParams();
-  const locale = Array.isArray(params.locale) ? params.locale[0] : params.locale;
 
-
-  const getLocalizedPath = (newLocale: string) => {
-    return `/${newLocale}${pathname}`;
-  }
 
   return (
     <SidebarProvider>
@@ -100,12 +94,12 @@ export default function MainLayoutContent({ children }: { children: ReactNode })
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>{t('Header.language')}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <Link href={pathname} locale="id" >
+                <Link href={pathname as any} locale="id" >
                   <DropdownMenuItem>
                     Indonesia
                   </DropdownMenuItem>
                 </Link>
-                <Link href={pathname} locale="en" >
+                <Link href={pathname as any} locale="en" >
                   <DropdownMenuItem>
                     English
                   </DropdownMenuItem>
