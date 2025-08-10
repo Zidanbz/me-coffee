@@ -9,7 +9,6 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { TrendingUp, TrendingDown, Package, DollarSign } from 'lucide-react';
 import { format, subDays } from 'date-fns';
-import { utcToZonedTime } from 'date-fns-tz';
 
 
 const RevenueChart = dynamic(() => import('@/components/dashboard/revenue-chart'), {
@@ -49,18 +48,18 @@ export default function DashboardClient({ transactions, inventory }: DashboardCl
   const [stats, setStats] = useState<Stat[] | null>(null);
 
   useEffect(() => {
-    // We get the user's timezone to correctly determine "today"
-    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const todayInUserTz = utcToZonedTime(new Date(), userTimeZone);
-    const yesterdayInUserTz = subDays(todayInUserTz, 1);
+    // Dates are now strings in ISO format. We can work with them directly.
+    const today = new Date();
+    const yesterday = subDays(today, 1);
     
-    const todayDateString = format(todayInUserTz, 'yyyy-MM-dd');
-    const yesterdayDateString = format(yesterdayInUserTz, 'yyyy-MM-dd');
+    // Get yyyy-mm-dd string from Date object, in UTC
+    const todayDateString = today.toISOString().slice(0, 10);
+    const yesterdayDateString = yesterday.toISOString().slice(0, 10);
 
-    // Transaction dates are already in UTC 'yyyy-MM-dd' format (from the server)
-    // We just need to slice the ISO string to get it.
-    const todayTransactions = transactions.filter(t => t.date.startsWith(todayDateString));
-    const yesterdayTransactions = transactions.filter(t => t.date.startsWith(yesterdayDateString));
+    // Transaction dates are already in UTC ISO string format.
+    // We just need to slice the string to get the date part for comparison.
+    const todayTransactions = transactions.filter(t => t.date.slice(0, 10) === todayDateString);
+    const yesterdayTransactions = transactions.filter(t => t.date.slice(0, 10) === yesterdayDateString);
 
     const todaysRevenue = todayTransactions
       .filter(t => t.type === 'income')

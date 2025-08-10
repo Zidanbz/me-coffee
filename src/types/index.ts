@@ -1,4 +1,6 @@
 
+import type { Timestamp } from 'firebase/firestore';
+
 export type Transaction = {
   id: string;
   type: 'income' | 'expense';
@@ -7,7 +9,7 @@ export type Transaction = {
   amount: number;
   description: string;
   paymentMethod: 'Cash' | 'Card' | 'Online';
-  createdAt: any;
+  createdAt: Timestamp;
 };
 
 export type ClientTransaction = Omit<Transaction, 'date' | 'createdAt'> & {
