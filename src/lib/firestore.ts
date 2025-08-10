@@ -9,10 +9,12 @@ import {
   getDocs,
   updateDoc,
   serverTimestamp,
-  Timestamp
+  Timestamp,
+  query,
+  orderBy
 } from 'firebase/firestore';
 import {db} from './firebase';
-import type {Ingredient, Transaction, ClientTransaction, UpdateTransaction} from '@/types';
+import type {Ingredient, Transaction, ClientTransaction, UpdateTransaction, NewTransaction} from '@/types';
 
 // Ingredient functions
 export async function getIngredients(): Promise<Ingredient[]> {
@@ -54,16 +56,13 @@ export async function deleteIngredient(id: string) {
 // Transaction functions
 export async function getTransactions(): Promise<ClientTransaction[]> {
   try {
-    const querySnapshot = await getDocs(collection(db, 'transactions'));
+    const q = query(collection(db, 'transactions'), orderBy('date', 'desc'));
+    const querySnapshot = await getDocs(q);
     const transactions: ClientTransaction[] = [];
     querySnapshot.forEach((doc) => {
       const data = doc.data();
       
-      const dateTimestamp = data.date as Timestamp | undefined;
       const createdAtTimestamp = data.createdAt as Timestamp | undefined;
-
-      // Fallback to current date if timestamps are missing to prevent crash
-      const date = dateTimestamp ? dateTimestamp.toDate() : new Date();
       const createdAt = createdAtTimestamp ? createdAtTimestamp.toDate() : new Date();
 
       transactions.push({ 
@@ -73,19 +72,18 @@ export async function getTransactions(): Promise<ClientTransaction[]> {
         category: data.category,
         description: data.description,
         paymentMethod: data.paymentMethod,
-        date: date.toISOString(),
+        date: data.date, // date is already a string
         createdAt: createdAt.toISOString(),
       });
     });
-    // sort by date descending
-    return transactions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    return transactions;
   } catch (error) {
     console.error("Error fetching transactions:", error);
     return [];
   }
 }
 
-export async function addTransaction(transaction: Omit<Transaction, 'id' | 'createdAt'>) {
+export async function addTransaction(transaction: NewTransaction) {
   const docRef = await addDoc(collection(db, 'transactions'), {
     ...transaction,
     createdAt: serverTimestamp()
@@ -102,3 +100,5 @@ export async function deleteTransaction(id: string) {
   const docRef = doc(db, 'transactions', id);
   await deleteDoc(docRef);
 }
+
+    

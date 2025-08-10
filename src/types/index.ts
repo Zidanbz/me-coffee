@@ -4,7 +4,7 @@ import type { Timestamp } from 'firebase/firestore';
 export type Transaction = {
   id: string;
   type: 'income' | 'expense';
-  date: Date;
+  date: string; // Stored as 'YYYY-MM-DD'
   category: string;
   amount: number;
   description: string;
@@ -12,12 +12,16 @@ export type Transaction = {
   createdAt: Timestamp;
 };
 
-export type ClientTransaction = Omit<Transaction, 'date' | 'createdAt'> & {
-  date: string;
-  createdAt: string;
+// Type for data sent from server to client components
+export type ClientTransaction = Omit<Transaction, 'createdAt'> & {
+  createdAt: string; // ISO string
 };
 
-export type UpdateTransaction = Partial<Omit<Transaction, 'id' | 'createdAt'>>;
+// Type for creating a new transaction from the form
+export type NewTransaction = Omit<Transaction, 'id' | 'createdAt'>;
+
+// Type for updating a transaction
+export type UpdateTransaction = Partial<NewTransaction>;
 
 
 export type Ingredient = {
@@ -27,3 +31,5 @@ export type Ingredient = {
   unit: string;
   price: number;
 };
+
+    

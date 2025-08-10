@@ -25,7 +25,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import type { ClientTransaction } from "@/types"
-import { formatInTimeZone } from 'date-fns-tz';
+import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { deleteTransaction } from '@/lib/firestore';
@@ -73,6 +73,13 @@ export default function TransactionsTable({ transactions }: { transactions: Clie
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(value);
   };
+  
+  const formatDate = (dateString: string) => {
+    // The date string is already in 'yyyy-MM-dd' format.
+    // We can parse it as UTC and format it.
+    const date = new Date(`${dateString}T00:00:00Z`);
+    return format(date, 'MMM d, yyyy');
+  }
 
   return (
     <>
@@ -87,6 +94,7 @@ export default function TransactionsTable({ transactions }: { transactions: Clie
               <TableRow>
                 <TableHead className="hidden md:table-cell">Type</TableHead>
                 <TableHead>Details</TableHead>
+                <TableHead>Category</TableHead>
                 <TableHead className="hidden md:table-cell">Amount</TableHead>
                 <TableHead className="hidden md:table-cell">Date</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
@@ -95,7 +103,7 @@ export default function TransactionsTable({ transactions }: { transactions: Clie
             <TableBody>
               {transactions.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={5} className="h-24 text-center">
+                    <TableCell colSpan={6} className="h-24 text-center">
                       No transactions found.
                     </TableCell>
                   </TableRow>
@@ -109,17 +117,18 @@ export default function TransactionsTable({ transactions }: { transactions: Clie
                     </TableCell>
                     <TableCell>
                       <div className="font-medium">{transaction.description}</div>
-                      <div className="text-sm text-muted-foreground">
-                        {transaction.category}
+                      <div className="text-sm text-muted-foreground md:hidden">
+                          {transaction.category} - {formatCurrency(transaction.amount)}
                       </div>
                        <div className="text-sm text-muted-foreground md:hidden">
-                          {formatCurrency(transaction.amount)} - {transaction.date ? formatInTimeZone(transaction.date, 'UTC', 'MMM d, yyyy') : 'No date'}
+                          {transaction.date ? formatDate(transaction.date) : 'No date'}
                       </div>
                     </TableCell>
+                    <TableCell className="hidden md:table-cell">{transaction.category}</TableCell>
                     <TableCell className={`hidden md:table-cell ${transaction.type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
                       {formatCurrency(transaction.amount)}
                     </TableCell>
-                    <TableCell className="hidden md:table-cell">{transaction.date ? formatInTimeZone(transaction.date, 'UTC', 'MMM d, yyyy') : 'No date'}</TableCell>
+                    <TableCell className="hidden md:table-cell">{transaction.date ? formatDate(transaction.date) : 'No date'}</TableCell>
                     <TableCell className="text-right">
                        <Button variant="ghost" size="icon" onClick={() => handleEditClick(transaction)}>
                           <Pencil className="w-4 h-4" />
@@ -161,3 +170,5 @@ export default function TransactionsTable({ transactions }: { transactions: Clie
     </>
   )
 }
+
+    

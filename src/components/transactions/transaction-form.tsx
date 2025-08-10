@@ -4,7 +4,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
-import { format } from "date-fns"
+import { format as formatDate } from "date-fns"
 import { useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
@@ -26,6 +26,7 @@ import { cn } from "@/lib/utils"
 import { Calendar as CalendarIcon, Loader2 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { addTransaction } from "@/lib/firestore"
+import type { NewTransaction } from "@/types"
 
 const transactionFormSchema = z.object({
   type: z.enum(["income", "expense"], {
@@ -64,13 +65,9 @@ export default function TransactionForm() {
 
   const onSubmit = async (data: TransactionFormValues) => {
     try {
-      // Adjust date to UTC before sending to Firestore
-      const localDate = data.date;
-      const utcDate = new Date(localDate.getUTCFullYear(), localDate.getUTCMonth(), localDate.getUTCDate());
-      
-      const transactionData = {
+      const transactionData: NewTransaction = {
         ...data,
-        date: utcDate,
+        date: formatDate(data.date, 'yyyy-MM-dd'), // Format date to YYYY-MM-DD string
       };
 
       await addTransaction(transactionData);
@@ -154,7 +151,7 @@ export default function TransactionForm() {
                             )}
                           >
                             {field.value ? (
-                              format(field.value, "PPP")
+                              formatDate(field.value, "PPP")
                             ) : (
                               <span>Pick a date</span>
                             )}
@@ -256,3 +253,5 @@ export default function TransactionForm() {
     </Card>
   )
 }
+
+    

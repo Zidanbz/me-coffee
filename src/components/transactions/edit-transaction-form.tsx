@@ -4,7 +4,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
-import { format } from "date-fns"
+import { format as formatDate } from "date-fns"
 import { useRouter } from "next/navigation"
 import type { Dispatch, SetStateAction } from "react"
 
@@ -72,19 +72,15 @@ export default function EditTransactionForm({ isOpen, setIsOpen, transaction }: 
     resolver: zodResolver(transactionFormSchema),
     defaultValues: {
       ...transaction,
-      date: new Date(transaction.date),
+      date: new Date(transaction.date), // Convert string from DB back to Date for the picker
     },
   });
 
   const onSubmit = async (data: TransactionFormValues) => {
     try {
-      // Adjust date to UTC before sending to Firestore
-      const localDate = data.date;
-      const utcDate = new Date(Date.UTC(localDate.getFullYear(), localDate.getMonth(), localDate.getDate()));
-
       const updateData: UpdateTransaction = {
         ...data,
-        date: utcDate,
+        date: formatDate(data.date, 'yyyy-MM-dd'), // Format date to YYYY-MM-DD string
       };
 
       await updateTransaction(transaction.id, updateData);
@@ -166,7 +162,7 @@ export default function EditTransactionForm({ isOpen, setIsOpen, transaction }: 
                                   )}
                                 >
                                   {field.value ? (
-                                    format(field.value, "PPP")
+                                    formatDate(field.value, "PPP")
                                   ) : (
                                     <span>Pick a date</span>
                                   )}
@@ -270,3 +266,5 @@ export default function EditTransactionForm({ isOpen, setIsOpen, transaction }: 
     </Dialog>
   )
 }
+
+    
