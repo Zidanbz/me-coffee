@@ -86,9 +86,9 @@ export default function TransactionsTable({ transactions }: { transactions: Clie
             <TableHeader>
               <TableRow>
                 <TableHead className="hidden md:table-cell">Type</TableHead>
-                <TableHead>Description</TableHead>
-                <TableHead>Amount</TableHead>
-                <TableHead>Date</TableHead>
+                <TableHead>Details</TableHead>
+                <TableHead className="hidden md:table-cell">Amount</TableHead>
+                <TableHead className="hidden md:table-cell">Date</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -109,14 +109,17 @@ export default function TransactionsTable({ transactions }: { transactions: Clie
                     </TableCell>
                     <TableCell>
                       <div className="font-medium">{transaction.description}</div>
-                      <div className="text-sm text-muted-foreground md:hidden">
-                        {transaction.category} ({transaction.type})
+                      <div className="text-sm text-muted-foreground">
+                        {transaction.category}
+                      </div>
+                       <div className="text-sm text-muted-foreground md:hidden">
+                          {formatCurrency(transaction.amount)} - {transaction.date ? formatInTimeZone(transaction.date, 'UTC', 'MMM d, yyyy') : 'No date'}
                       </div>
                     </TableCell>
-                    <TableCell className={transaction.type === 'income' ? 'text-green-600' : 'text-red-600'}>
+                    <TableCell className={`hidden md:table-cell ${transaction.type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
                       {formatCurrency(transaction.amount)}
                     </TableCell>
-                    <TableCell>{transaction.date ? formatInTimeZone(transaction.date, 'UTC', 'MMM d, yyyy') : 'No date'}</TableCell>
+                    <TableCell className="hidden md:table-cell">{transaction.date ? formatInTimeZone(transaction.date, 'UTC', 'MMM d, yyyy') : 'No date'}</TableCell>
                     <TableCell className="text-right">
                        <Button variant="ghost" size="icon" onClick={() => handleEditClick(transaction)}>
                           <Pencil className="w-4 h-4" />
