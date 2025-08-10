@@ -78,7 +78,15 @@ export default function EditTransactionForm({ isOpen, setIsOpen, transaction }: 
 
   const onSubmit = async (data: TransactionFormValues) => {
     try {
-      const { ...updateData }: UpdateTransaction = data
+      // Adjust date to UTC before sending to Firestore
+      const localDate = data.date;
+      const utcDate = new Date(Date.UTC(localDate.getFullYear(), localDate.getMonth(), localDate.getDate()));
+
+      const updateData: UpdateTransaction = {
+        ...data,
+        date: utcDate,
+      };
+
       await updateTransaction(transaction.id, updateData);
       toast({
         title: "Transaction Updated!",

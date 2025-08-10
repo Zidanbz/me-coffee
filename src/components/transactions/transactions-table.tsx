@@ -85,8 +85,8 @@ export default function TransactionsTable({ transactions }: { transactions: Clie
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Type</TableHead>
-                <TableHead>Category</TableHead>
+                <TableHead className="hidden md:table-cell">Type</TableHead>
+                <TableHead>Description</TableHead>
                 <TableHead>Amount</TableHead>
                 <TableHead>Date</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
@@ -102,12 +102,17 @@ export default function TransactionsTable({ transactions }: { transactions: Clie
               ) : (
                 transactions.map((transaction) => (
                   <TableRow key={transaction.id}>
-                    <TableCell>
+                    <TableCell className="hidden md:table-cell">
                       <Badge variant={transaction.type === 'income' ? 'secondary' : 'destructive'}>
                         {transaction.type}
                       </Badge>
                     </TableCell>
-                    <TableCell className="font-medium">{transaction.category}</TableCell>
+                    <TableCell>
+                      <div className="font-medium">{transaction.description}</div>
+                      <div className="text-sm text-muted-foreground md:hidden">
+                        {transaction.category} ({transaction.type})
+                      </div>
+                    </TableCell>
                     <TableCell className={transaction.type === 'income' ? 'text-green-600' : 'text-red-600'}>
                       {formatCurrency(transaction.amount)}
                     </TableCell>

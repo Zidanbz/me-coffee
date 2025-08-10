@@ -64,7 +64,16 @@ export default function TransactionForm() {
 
   const onSubmit = async (data: TransactionFormValues) => {
     try {
-      await addTransaction(data);
+      // Adjust date to UTC before sending to Firestore
+      const localDate = data.date;
+      const utcDate = new Date(localDate.getUTCFullYear(), localDate.getUTCMonth(), localDate.getUTCDate());
+      
+      const transactionData = {
+        ...data,
+        date: utcDate,
+      };
+
+      await addTransaction(transactionData);
       toast({
         title: "Transaction Submitted!",
         description: "Your transaction has been recorded successfully.",
