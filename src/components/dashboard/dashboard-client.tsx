@@ -43,6 +43,9 @@ function StatCardSkeleton() {
   )
 }
 
+const formatCurrency = (value: number) => {
+  return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(value);
+};
 
 export default function DashboardClient({ transactions, inventory }: DashboardClientProps) {
   const [stats, setStats] = useState<Stat[] | null>(null);
@@ -85,10 +88,6 @@ export default function DashboardClient({ transactions, inventory }: DashboardCl
     const yesterdayProfit = yesterdaysRevenue - yesterdaysExpenses;
     const profitChange = yesterdayProfit === 0 ? (profit > 0 ? 100 : 0) : ((profit - yesterdayProfit) / yesterdayProfit) * 100;
     
-    const formatCurrency = (value: number) => {
-      return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(value);
-    };
-
     const newStats = [
       {
         title: "Today's Revenue",

@@ -63,7 +63,24 @@ export async function getTransactions(): Promise<ClientTransaction[]> {
       const data = doc.data();
       
       const createdAtTimestamp = data.createdAt as Timestamp | undefined;
-      const createdAt = createdAtTimestamp ? createdAtTimestamp.toDate() : new Date();
+      const createdAt = createdAtTimestamp ? createdAtTimestamp.toDate().toISOString() : new Date().toISOString();
+
+      // Ensure date is a string. If it's a Timestamp, convert it.
+      let dateString = data.date;
+      if (dateString instanceof Timestamp) {
+        // Convert to YYYY-MM-DD format, respecting UTC
+        const dateObj = dateString.toDate();
+        const year = dateObj.getUTCFullYear();
+        const month = String(dateObj.getUTCMonth() + 1).padStart(2, '0');
+        const day = String(dateObj.getUTCDate()).padStart(2, '0');
+        dateString = `${year}-${month}-${day}`;
+      }
+      
+      // If date is missing for some reason, default to today's date string
+      if (typeof dateString !== 'string') {
+        dateString = new Date().toISOString().slice(0, 10);
+      }
+
 
       transactions.push({ 
         id: doc.id, 
@@ -72,8 +89,8 @@ export async function getTransactions(): Promise<ClientTransaction[]> {
         category: data.category,
         description: data.description,
         paymentMethod: data.paymentMethod,
-        date: data.date, // date is already a string
-        createdAt: createdAt.toISOString(),
+        date: dateString,
+        createdAt: createdAt,
       });
     });
     return transactions;
@@ -82,6 +99,7 @@ export async function getTransactions(): Promise<ClientTransaction[]> {
     return [];
   }
 }
+
 
 export async function addTransaction(transaction: NewTransaction) {
   const docRef = await addDoc(collection(db, 'transactions'), {
