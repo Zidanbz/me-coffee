@@ -8,6 +8,9 @@ import dynamic from 'next/dynamic';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { TrendingUp, TrendingDown, Package, DollarSign } from 'lucide-react';
+import { format, subDays } from 'date-fns';
+import { utcToZonedTime } from 'date-fns-tz';
+
 
 const RevenueChart = dynamic(() => import('@/components/dashboard/revenue-chart'), {
   ssr: false,
@@ -46,18 +49,18 @@ export default function DashboardClient({ transactions, inventory }: DashboardCl
   const [stats, setStats] = useState<Stat[] | null>(null);
 
   useEffect(() => {
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
+    // We get the user's timezone to correctly determine "today"
+    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const todayInUserTz = utcToZonedTime(new Date(), userTimeZone);
+    const yesterdayInUserTz = subDays(todayInUserTz, 1);
+    
+    const todayDateString = format(todayInUserTz, 'yyyy-MM-dd');
+    const yesterdayDateString = format(yesterdayInUserTz, 'yyyy-MM-dd');
 
-    const isSameDay = (d1: Date, d2: Date) => {
-      return d1.getFullYear() === d2.getFullYear() &&
-             d1.getMonth() === d2.getMonth() &&
-             d1.getDate() === d2.getDate();
-    }
-
-    const todayTransactions = transactions.filter(t => isSameDay(new Date(t.date), today));
-    const yesterdayTransactions = transactions.filter(t => isSameDay(new Date(t.date), yesterday));
+    // Transaction dates are already in UTC 'yyyy-MM-dd' format (from the server)
+    // We just need to slice the ISO string to get it.
+    const todayTransactions = transactions.filter(t => t.date.startsWith(todayDateString));
+    const yesterdayTransactions = transactions.filter(t => t.date.startsWith(yesterdayDateString));
 
     const todaysRevenue = todayTransactions
       .filter(t => t.type === 'income')
