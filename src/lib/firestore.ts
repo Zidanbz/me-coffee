@@ -57,7 +57,8 @@ export async function deleteIngredient(id: string) {
 
 
 // Transaction functions
-export async function getTransactions({ year, month }: { year?: string, month?: string } = {}): Promise<ClientTransaction[]> {
+export async function getTransactions(filter: { year?: string, month?: string } = {}): Promise<ClientTransaction[]> {
+  const { year, month } = filter;
   try {
     const transactionsRef = collection(db, 'transactions');
     let q;
