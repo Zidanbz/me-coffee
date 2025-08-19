@@ -56,23 +56,11 @@ export async function deleteIngredient(id: string) {
 
 
 // Transaction functions
-export async function getTransactions({ month, year }: { month?: number, year?: number } = {}): Promise<ClientTransaction[]> {
+export async function getTransactions(): Promise<ClientTransaction[]> {
   try {
     const transactionsRef = collection(db, 'transactions');
     
-    let constraints: any[] = [orderBy('date', 'desc')];
-
-    if (year && month) {
-      const startDate = `${year}-${String(month).padStart(2, '0')}-01`;
-      const nextMonth = month === 12 ? 1 : month + 1;
-      const nextYear = month === 12 ? year + 1 : year;
-      const endDate = `${nextYear}-${String(nextMonth).padStart(2, '0')}-01`;
-
-      constraints.push(where('date', '>=', startDate));
-      constraints.push(where('date', '<', endDate));
-    }
-
-    const q = query(transactionsRef, ...constraints);
+    const q = query(transactionsRef, orderBy('date', 'desc'));
     const querySnapshot = await getDocs(q);
 
     const transactions: ClientTransaction[] = [];
