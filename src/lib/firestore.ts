@@ -1,4 +1,5 @@
 
+
 'use server';
 
 import {
@@ -11,7 +12,8 @@ import {
   serverTimestamp,
   Timestamp,
   query,
-  orderBy
+  orderBy,
+  where,
 } from 'firebase/firestore';
 import {db} from './firebase';
 import type {Ingredient, Transaction, ClientTransaction, UpdateTransaction, NewTransaction} from '@/types';
@@ -54,33 +56,31 @@ export async function deleteIngredient(id: string) {
 
 
 // Transaction functions
-export async function getTransactions(): Promise<ClientTransaction[]> {
+export async function getTransactions({ month, year }: { month?: number, year?: number } = {}): Promise<ClientTransaction[]> {
   try {
-    const q = query(collection(db, 'transactions'), orderBy('date', 'desc'));
+    const transactionsRef = collection(db, 'transactions');
+    
+    let constraints = [orderBy('date', 'desc')];
+
+    if (year && month) {
+      const startDate = `${year}-${String(month).padStart(2, '0')}-01`;
+      const nextMonth = month === 12 ? 1 : month + 1;
+      const nextYear = month === 12 ? year + 1 : year;
+      const endDate = `${nextYear}-${String(nextMonth).padStart(2, '0')}-01`;
+
+      constraints.push(where('date', '>=', startDate));
+      constraints.push(where('date', '<', endDate));
+    }
+
+    const q = query(transactionsRef, ...constraints);
     const querySnapshot = await getDocs(q);
+
     const transactions: ClientTransaction[] = [];
     querySnapshot.forEach((doc) => {
       const data = doc.data();
       
       const createdAtTimestamp = data.createdAt as Timestamp | undefined;
       const createdAt = createdAtTimestamp ? createdAtTimestamp.toDate().toISOString() : new Date().toISOString();
-
-      // Ensure date is a string. If it's a Timestamp, convert it.
-      let dateString = data.date;
-      if (dateString instanceof Timestamp) {
-        // Convert to YYYY-MM-DD format, respecting UTC
-        const dateObj = dateString.toDate();
-        const year = dateObj.getUTCFullYear();
-        const month = String(dateObj.getUTCMonth() + 1).padStart(2, '0');
-        const day = String(dateObj.getUTCDate()).padStart(2, '0');
-        dateString = `${year}-${month}-${day}`;
-      }
-      
-      // If date is missing for some reason, default to today's date string
-      if (typeof dateString !== 'string') {
-        dateString = new Date().toISOString().slice(0, 10);
-      }
-
 
       transactions.push({ 
         id: doc.id, 
@@ -89,7 +89,7 @@ export async function getTransactions(): Promise<ClientTransaction[]> {
         category: data.category,
         description: data.description,
         paymentMethod: data.paymentMethod,
-        date: dateString,
+        date: data.date, // Already a string 'YYYY-MM-DD'
         createdAt: createdAt,
       });
     });
@@ -119,4 +119,3 @@ export async function deleteTransaction(id: string) {
   await deleteDoc(docRef);
 }
 
-    
