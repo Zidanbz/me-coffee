@@ -17,8 +17,11 @@ export default async function TransactionsPage({
     month?: string;
   };
 }) {
-  const year = searchParams?.year;
-  const month = searchParams?.month;
+  const currentYear = new Date().getFullYear().toString();
+  const currentMonth = (new Date().getMonth() + 1).toString();
+
+  const year = searchParams?.year || currentYear;
+  const month = searchParams?.month || currentMonth;
 
   const [transactions, availableYears] = await Promise.all([
     getTransactions({ year, month }),
