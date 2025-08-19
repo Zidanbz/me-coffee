@@ -16,7 +16,8 @@ import {
   where,
 } from 'firebase/firestore';
 import {db} from './firebase';
-import type {Ingredient, Transaction, ClientTransaction, UpdateTransaction, NewTransaction} from '@/types';
+import type {Ingredient, ClientTransaction, UpdateTransaction, NewTransaction} from '@/types';
+import { startOfMonth, endOfMonth, format } from 'date-fns';
 
 // Ingredient functions
 export async function getIngredients(): Promise<Ingredient[]> {
@@ -56,11 +57,32 @@ export async function deleteIngredient(id: string) {
 
 
 // Transaction functions
-export async function getTransactions(): Promise<ClientTransaction[]> {
+export async function getTransactions({ year, month }: { year?: string, month?: string } = {}): Promise<ClientTransaction[]> {
   try {
     const transactionsRef = collection(db, 'transactions');
-    
-    const q = query(transactionsRef, orderBy('date', 'desc'));
+    let q;
+
+    if (year && month) {
+      const yearNum = parseInt(year);
+      const monthNum = parseInt(month) - 1; // month is 0-indexed in Date
+      
+      const startDate = startOfMonth(new Date(yearNum, monthNum));
+      const endDate = endOfMonth(new Date(yearNum, monthNum));
+
+      const startDateString = format(startDate, 'yyyy-MM-dd');
+      const endDateString = format(endDate, 'yyyy-MM-dd');
+
+      q = query(
+        transactionsRef,
+        orderBy('date', 'desc'),
+        where('date', '>=', startDateString),
+        where('date', '<=', endDateString)
+      );
+    } else {
+      // Default query without date filter, just order by most recent
+      q = query(transactionsRef, orderBy('date', 'desc'));
+    }
+
     const querySnapshot = await getDocs(q);
 
     const transactions: ClientTransaction[] = [];
@@ -71,11 +93,11 @@ export async function getTransactions(): Promise<ClientTransaction[]> {
       const createdAt = createdAtTimestamp ? createdAtTimestamp.toDate().toISOString() : new Date().toISOString();
       
       let dateString = data.date;
+      // Handle legacy date format if it's a Timestamp
       if (data.date instanceof Timestamp) {
         const date = data.date.toDate();
         dateString = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
       }
-
 
       transactions.push({ 
         id: doc.id, 
@@ -84,7 +106,7 @@ export async function getTransactions(): Promise<ClientTransaction[]> {
         category: data.category,
         description: data.description,
         paymentMethod: data.paymentMethod,
-        date: dateString,
+        date: dateString, // Already a string 'yyyy-MM-dd'
         createdAt: createdAt,
       });
     });
@@ -92,6 +114,35 @@ export async function getTransactions(): Promise<ClientTransaction[]> {
   } catch (error) {
     console.error("Error fetching transactions:", error);
     return [];
+  }
+}
+
+export async function getAvailableTransactionYears(): Promise<number[]> {
+  try {
+    const transactionsRef = collection(db, 'transactions');
+    const q = query(transactionsRef, orderBy('date', 'desc'));
+    const querySnapshot = await getDocs(q);
+    
+    const years = new Set<number>();
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      let dateString = data.date;
+
+      if (data.date instanceof Timestamp) {
+        dateString = data.date.toDate().toISOString().slice(0, 10);
+      }
+      
+      if (typeof dateString === 'string') {
+        const year = parseInt(dateString.slice(0, 4));
+        if (!isNaN(year)) {
+          years.add(year);
+        }
+      }
+    });
+    return Array.from(years).sort((a, b) => b - a);
+  } catch (error) {
+    console.error("Error fetching available years:", error);
+    return [new Date().getFullYear()]; // Fallback to current year
   }
 }
 

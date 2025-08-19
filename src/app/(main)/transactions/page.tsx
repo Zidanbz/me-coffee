@@ -1,14 +1,29 @@
 
+
 import TransactionForm from "@/components/transactions/transaction-form";
 import TransactionsTable from "@/components/transactions/transactions-table";
-import { getTransactions } from "@/lib/firestore";
+import { getTransactions, getAvailableTransactionYears } from "@/lib/firestore";
 import type { ClientTransaction } from "@/types";
 import TransactionStats from "@/components/transactions/transaction-stats";
+import TransactionFilter from "@/components/transactions/transaction-filter";
 
 export const revalidate = 0;
 
-export default async function TransactionsPage() {
-  const transactions: ClientTransaction[] = await getTransactions();
+export default async function TransactionsPage({
+  searchParams,
+}: {
+  searchParams?: {
+    year?: string;
+    month?: string;
+  };
+}) {
+  const year = searchParams?.year;
+  const month = searchParams?.month;
+
+  const [transactions, availableYears] = await Promise.all([
+    getTransactions({ year, month }),
+    getAvailableTransactionYears()
+  ]);
 
   const totalIncome = transactions
     .filter((t) => t.type === 'income')
@@ -20,11 +35,11 @@ export default async function TransactionsPage() {
 
   const balance = totalIncome - totalExpenses;
 
-
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
          <h1 className="text-2xl font-bold md:text-3xl font-headline">Transactions</h1>
+         <TransactionFilter availableYears={availableYears} />
       </div>
       
       <TransactionStats
