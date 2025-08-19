@@ -125,8 +125,8 @@ export default function TransactionsTable({ transactions }: { transactions: Clie
                       </div>
                     </TableCell>
                     <TableCell className="hidden md:table-cell">{transaction.category}</TableCell>
-                    <TableCell className={`hidden md:table-cell ${transaction.type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
-                      {formatCurrency(transaction.amount)}
+                    <TableCell className={`hidden font-medium md:table-cell ${transaction.type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
+                      {transaction.type === 'income' ? '+' : '-'} {formatCurrency(transaction.amount)}
                     </TableCell>
                     <TableCell className="hidden md:table-cell">{transaction.date ? formatDate(transaction.date) : 'No date'}</TableCell>
                     <TableCell className="text-right">
@@ -170,5 +170,3 @@ export default function TransactionsTable({ transactions }: { transactions: Clie
     </>
   )
 }
-
-    
