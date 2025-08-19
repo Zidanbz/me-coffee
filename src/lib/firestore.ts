@@ -60,7 +60,7 @@ export async function getTransactions({ month, year }: { month?: number, year?: 
   try {
     const transactionsRef = collection(db, 'transactions');
     
-    let constraints = [orderBy('date', 'desc')];
+    let constraints: any[] = [orderBy('date', 'desc')];
 
     if (year && month) {
       const startDate = `${year}-${String(month).padStart(2, '0')}-01`;
@@ -81,6 +81,15 @@ export async function getTransactions({ month, year }: { month?: number, year?: 
       
       const createdAtTimestamp = data.createdAt as Timestamp | undefined;
       const createdAt = createdAtTimestamp ? createdAtTimestamp.toDate().toISOString() : new Date().toISOString();
+      
+      let dateString = data.date;
+      if (data.date instanceof Timestamp) {
+        // Handle existing Timestamp data
+        const date = data.date.toDate();
+        // Format to YYYY-MM-DD string
+        dateString = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+      }
+
 
       transactions.push({ 
         id: doc.id, 
@@ -89,7 +98,7 @@ export async function getTransactions({ month, year }: { month?: number, year?: 
         category: data.category,
         description: data.description,
         paymentMethod: data.paymentMethod,
-        date: data.date, // Already a string 'YYYY-MM-DD'
+        date: dateString,
         createdAt: createdAt,
       });
     });
@@ -118,4 +127,3 @@ export async function deleteTransaction(id: string) {
   const docRef = doc(db, 'transactions', id);
   await deleteDoc(docRef);
 }
-

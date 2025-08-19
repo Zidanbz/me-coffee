@@ -18,7 +18,9 @@ export type ClientTransaction = Omit<Transaction, 'createdAt'> & {
 };
 
 // Type for creating a new transaction from the form
-export type NewTransaction = Omit<Transaction, 'id' | 'createdAt'>;
+export type NewTransaction = Omit<Transaction, 'id' | 'createdAt'> & {
+  date: string; // Ensure date is string for new transactions
+};
 
 // Type for updating a transaction
 export type UpdateTransaction = Partial<NewTransaction>;
@@ -31,5 +33,3 @@ export type Ingredient = {
   unit: string;
   price: number;
 };
-
-    

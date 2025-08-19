@@ -266,5 +266,3 @@ export default function EditTransactionForm({ isOpen, setIsOpen, transaction }: 
     </Dialog>
   )
 }
-
-    
