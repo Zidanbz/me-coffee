@@ -18,27 +18,17 @@ export default function TransactionFilter({ availableYears }: TransactionFilterP
   const currentYear = searchParams.get('year') || new Date().getFullYear().toString();
   const currentMonth = searchParams.get('month') || (new Date().getMonth() + 1).toString();
 
-  const createQueryString = useCallback(
-    (params: Record<string, string>) => {
-      const newSearchParams = new URLSearchParams(searchParams.toString());
-      for (const [key, value] of Object.entries(params)) {
-        if (value) {
-            newSearchParams.set(key, value);
-        } else {
-            newSearchParams.delete(key);
-        }
-      }
-      return newSearchParams.toString();
-    },
-    [searchParams]
-  );
-  
   const handleFilterChange = (key: 'year' | 'month', value: string) => {
-    const newParams = {
-        year: key === 'year' ? value : currentYear,
-        month: key === 'month' ? value : currentMonth
-    };
-    router.push(`${pathname}?${createQueryString(newParams)}`);
+    const newSearchParams = new URLSearchParams(searchParams.toString());
+    newSearchParams.set(key, value);
+    // Ensure both year and month are present if one is set
+    if (!newSearchParams.has('year')) {
+      newSearchParams.set('year', new Date().getFullYear().toString());
+    }
+    if (!newSearchParams.has('month')) {
+      newSearchParams.set('month', (new Date().getMonth() + 1).toString());
+    }
+    router.push(`${pathname}?${newSearchParams.toString()}`);
   };
 
   const handleClearFilters = () => {
