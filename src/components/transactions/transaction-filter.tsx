@@ -19,15 +19,21 @@ export default function TransactionFilter({ availableYears }: TransactionFilterP
   const currentMonth = searchParams.get('month') || (new Date().getMonth() + 1).toString();
 
   const handleFilterChange = (key: 'year' | 'month', value: string) => {
+    // Create a new URLSearchParams object from the current search params
     const newSearchParams = new URLSearchParams(searchParams.toString());
+    
+    // Set the new value for the changed filter
     newSearchParams.set(key, value);
-    // Ensure both year and month are present if one is set
+    
+    // Ensure both year and month are present if one is set, to maintain a consistent state
     if (!newSearchParams.has('year')) {
       newSearchParams.set('year', new Date().getFullYear().toString());
     }
     if (!newSearchParams.has('month')) {
       newSearchParams.set('month', (new Date().getMonth() + 1).toString());
     }
+    
+    // Push the new URL with the updated search params
     router.push(`${pathname}?${newSearchParams.toString()}`);
   };
 
