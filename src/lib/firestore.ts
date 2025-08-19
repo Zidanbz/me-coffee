@@ -84,9 +84,7 @@ export async function getTransactions({ month, year }: { month?: number, year?: 
       
       let dateString = data.date;
       if (data.date instanceof Timestamp) {
-        // Handle existing Timestamp data
         const date = data.date.toDate();
-        // Format to YYYY-MM-DD string
         dateString = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
       }
 
